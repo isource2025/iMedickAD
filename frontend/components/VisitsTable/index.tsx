@@ -26,6 +26,7 @@ export default function VisitsTable({ numeroDocumento, patientName }: VisitsTabl
   };
 
   const getEstadoBadgeClass = (estado: string) => {
+    if (!estado) return styles.badgeDefault;
     const estadoLower = estado.toLowerCase();
     if (estadoLower.includes('egresado')) return styles.badgeEgresado;
     if (estadoLower.includes('internado')) return styles.badgeInternado;
@@ -89,7 +90,17 @@ export default function VisitsTable({ numeroDocumento, patientName }: VisitsTabl
                     <td>{visit.tipoIngreso}</td>
                     <td>
                       <div className={styles.diagnostico}>
-                        {visit.diagnostico || '-'}
+                        {visit.diagnostico && (
+                          <>
+                            <strong>{visit.diagnostico}</strong>
+                            {visit.descripcionDiagnostico && (
+                              <div className={styles.descripcionDiagnostico}>
+                                {visit.descripcionDiagnostico}
+                              </div>
+                            )}
+                          </>
+                        )}
+                        {!visit.diagnostico && '-'}
                       </div>
                     </td>
                     <td>

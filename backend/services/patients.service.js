@@ -7,6 +7,8 @@ class PatientsService {
    */
   async buscarPacientes(hospitalAsignado, searchTerm = '', page = 1, limit = 30) {
     try {
+      console.log('🔍 buscarPacientes - Parámetros:', { hospitalAsignado, searchTerm, page, limit });
+      
       const pool = await getConnection();
       const offset = (page - 1) * limit;
       
@@ -22,20 +24,27 @@ class PatientsService {
         params.push({ name: 'searchTerm', type: sql.VarChar, value: `%${searchTerm}%` });
       }
       
+      console.log('📝 whereClause:', whereClause);
+      console.log('📝 params:', params);
+      
       // Contar total
       const countRequest = pool.request();
       params.forEach(param => {
         countRequest.input(param.name, param.type, param.value);
       });
       
-      const countResult = await countRequest.query(`
+      const countQuery = `
         SELECT COUNT(DISTINCT p.NumeroDocumento) as total
-        FROM imPaciente p
-        INNER JOIN imVisita v ON p.NumeroDocumento = v.NumeroDocumento
-        WHERE v.Hospital = '${hospitalAsignado}' AND ${whereClause}
-      `);
+        FROM imPacientes p
+        WHERE ${whereClause}
+      `;
+      
+      console.log('🔢 COUNT Query:', countQuery);
+      
+      const countResult = await countRequest.query(countQuery);
       
       const totalCount = countResult.recordset[0].total;
+      console.log('📊 Total encontrado:', totalCount);
       
       // Obtener datos paginados
       const dataRequest = pool.request();
@@ -43,26 +52,30 @@ class PatientsService {
         dataRequest.input(param.name, param.type, param.value);
       });
       
-      const dataResult = await dataRequest.query(`
+      const dataQuery = `
         SELECT DISTINCT
           p.NumeroDocumento,
           p.ApellidoyNombre,
           p.FechaNacimiento,
           p.Sexo,
-          p.Telefono,
+          p.TelefonoParticular as Telefono,
           p.Domicilio,
-          p.Email,
+          p.Mail as Email,
           (SELECT COUNT(*) 
            FROM imVisita v2 
-           WHERE v2.NumeroDocumento = p.NumeroDocumento 
-           AND v2.Hospital = '${hospitalAsignado}') as TotalVisitas
-        FROM imPaciente p
-        INNER JOIN imVisita v ON p.NumeroDocumento = v.NumeroDocumento
-        WHERE v.Hospital = '${hospitalAsignado}' AND ${whereClause}
+           WHERE v2.IDPACIENTE = p.IdPaciente) as TotalVisitas
+        FROM imPacientes p
+        WHERE ${whereClause}
         ORDER BY p.ApellidoyNombre
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
-      `);
+      `;
+      
+      console.log('📋 DATA Query:', dataQuery);
+      
+      const dataResult = await dataRequest.query(dataQuery);
+      
+      console.log('✅ Registros obtenidos:', dataResult.recordset.length);
       
       // Procesar datos
       const pacientes = dataResult.recordset.map(p => ({
@@ -106,15 +119,14 @@ class PatientsService {
             p.ApellidoyNombre,
             p.FechaNacimiento,
             p.Sexo,
-            p.Telefono,
+            p.TelefonoParticular as Telefono,
             p.Domicilio,
-            p.Localidad,
-            p.Email,
+            p.ValorLocalidad as Localidad,
+            p.Mail as Email,
             (SELECT COUNT(*) 
              FROM imVisita v 
-             WHERE v.NumeroDocumento = p.NumeroDocumento 
-             AND v.Hospital = '${hospitalAsignado}') as TotalVisitas
-          FROM imPaciente p
+             WHERE v.IDPACIENTE = p.IdPaciente) as TotalVisitas
+          FROM imPacientes p
           WHERE p.NumeroDocumento = @numeroDocumento
         `);
       

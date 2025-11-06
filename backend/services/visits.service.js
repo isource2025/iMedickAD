@@ -13,12 +13,11 @@ class VisitsService {
       // Contar total
       const countResult = await pool.request()
         .input('numeroDocumento', sql.VarChar, numeroDocumento)
-        .input('hospital', sql.VarChar, hospitalAsignado)
         .query(`
           SELECT COUNT(*) as total
-          FROM imVisita
-          WHERE NumeroDocumento = @numeroDocumento
-          AND Hospital = @hospital
+          FROM imVisita v
+          INNER JOIN imPacientes p ON v.IDPACIENTE = p.IdPaciente
+          WHERE p.NumeroDocumento = @numeroDocumento
         `);
       
       const totalCount = countResult.recordset[0].total;
@@ -26,49 +25,66 @@ class VisitsService {
       // Obtener datos
       const dataResult = await pool.request()
         .input('numeroDocumento', sql.VarChar, numeroDocumento)
-        .input('hospital', sql.VarChar, hospitalAsignado)
         .query(`
           SELECT 
-            v.NumeroVisita,
-            v.NumeroDocumento,
-            v.FechaAdmision,
-            v.HoraAdmision,
-            v.FechaEgreso,
-            v.HoraEgreso,
-            v.Hospital,
-            v.Sector,
-            v.ClasePaciente,
-            v.TipoIngreso,
-            v.Estado,
-            v.Observaciones,
-            d.Diagnostico,
-            d.TipoDiagnostico
+            v.NUMEROVISITA as NumeroVisita,
+            p.NumeroDocumento,
+            v.FECHAADMISIONS as FechaAdmision,
+            0 as HoraAdmision,
+            v.FECHAEGRESO as FechaEgreso,
+            v.HORAEGRESO as HoraEgreso,
+            v.SERVICIOHOSPITAL as Hospital,
+            v.VALORSECTOR as Sector,
+            v.CLASEPACIENTE as ClasePaciente,
+            v.TIPOADMISION as TipoIngreso,
+            v.ESTADO,
+            v.OBSERVACIONES as Observaciones,
+            v.DIAGNOSTICO as CodigoOMS,
+            d.Descripcion as DescripcionDiagnostico
           FROM imVisita v
-          LEFT JOIN imDiagnosticos d ON v.NumeroVisita = d.NumeroVisita
-          WHERE v.NumeroDocumento = @numeroDocumento
-          AND v.Hospital = @hospital
-          ORDER BY v.FechaAdmision DESC, v.HoraAdmision DESC
+          INNER JOIN imPacientes p ON v.IDPACIENTE = p.IdPaciente
+          LEFT JOIN imDiagnosticos d ON v.DIAGNOSTICO = d.CodigoOMS
+          WHERE p.NumeroDocumento = @numeroDocumento
+          ORDER BY v.FECHAADMISIONS DESC
           OFFSET ${offset} ROWS
           FETCH NEXT ${limit} ROWS ONLY
         `);
       
+      console.log('📋 Visitas obtenidas:', dataResult.recordset.length);
+      if (dataResult.recordset.length > 0) {
+        console.log('🔍 Primera visita (RAW):', JSON.stringify(dataResult.recordset[0], null, 2));
+      }
+      
       // Procesar datos
-      const visitas = dataResult.recordset.map(v => ({
-        numeroVisita: v.NumeroVisita,
-        numeroDocumento: v.NumeroDocumento,
-        fechaAdmision: clarionToDate(v.FechaAdmision),
-        horaAdmision: clarionToTime(v.HoraAdmision),
-        fechaEgreso: clarionToDate(v.FechaEgreso),
-        horaEgreso: clarionToTime(v.HoraEgreso),
-        hospital: v.Hospital,
-        sector: v.Sector,
-        clasePaciente: v.ClasePaciente,
-        tipoIngreso: v.TipoIngreso,
-        estado: v.Estado,
-        observaciones: v.Observaciones,
-        diagnostico: v.Diagnostico,
-        tipoDiagnostico: v.TipoDiagnostico
-      }));
+      const visitas = dataResult.recordset.map(v => {
+        console.log('🔄 Procesando visita:', v.NumeroVisita, {
+          FechaAdmision: v.FechaAdmision,
+          FechaEgreso: v.FechaEgreso,
+          Hospital: v.Hospital,
+          Sector: v.Sector,
+          ClasePaciente: v.ClasePaciente,
+          TipoIngreso: v.TipoIngreso,
+          Estado: v.Estado,
+          CodigoOMS: v.CodigoOMS,
+          DescripcionDiagnostico: v.DescripcionDiagnostico
+        });
+        return {
+          numeroVisita: v.NumeroVisita,
+          numeroDocumento: v.NumeroDocumento,
+          fechaAdmision: v.FechaAdmision, // Ya es datetime de SQL Server
+          horaAdmision: v.FechaAdmision ? new Date(v.FechaAdmision).toLocaleTimeString('es-AR') : '00:00:00',
+          fechaEgreso: v.FechaEgreso ? clarionToDate(v.FechaEgreso) : null,
+          horaEgreso: v.HoraEgreso ? clarionToTime(v.HoraEgreso) : '00:00:00',
+          hospital: v.Hospital || '',
+          sector: v.Sector || '',
+          clasePaciente: v.ClasePaciente || '',
+          tipoIngreso: v.TipoIngreso || '',
+          estado: v.Estado || '',
+          observaciones: v.Observaciones || '',
+          diagnostico: v.CodigoOMS ? v.CodigoOMS.trim() : '',
+          descripcionDiagnostico: v.DescripcionDiagnostico ? v.DescripcionDiagnostico.trim() : ''
+        };
+      });
       
       return {
         data: visitas,
@@ -94,31 +110,29 @@ class VisitsService {
       
       const result = await pool.request()
         .input('numeroVisita', sql.VarChar, numeroVisita)
-        .input('hospital', sql.VarChar, hospitalAsignado)
         .query(`
           SELECT 
-            v.NumeroVisita,
-            v.NumeroDocumento,
-            v.FechaAdmision,
-            v.HoraAdmision,
-            v.FechaEgreso,
-            v.HoraEgreso,
-            v.Hospital,
-            v.Sector,
-            v.ClasePaciente,
-            v.TipoIngreso,
-            v.Estado,
-            v.Observaciones,
+            v.NUMEROVISITA as NumeroVisita,
+            p.NumeroDocumento,
+            v.FECHAADMISIONS as FechaAdmision,
+            0 as HoraAdmision,
+            v.FECHAEGRESO as FechaEgreso,
+            v.HORAEGRESO as HoraEgreso,
+            v.SERVICIOHOSPITAL as Hospital,
+            v.VALORSECTOR as Sector,
+            v.CLASEPACIENTE as ClasePaciente,
+            v.TIPOADMISION as TipoIngreso,
+            v.ESTADO,
+            v.OBSERVACIONES as Observaciones,
             p.ApellidoyNombre,
             p.FechaNacimiento,
             p.Sexo,
-            d.Diagnostico,
-            d.TipoDiagnostico
+            v.DIAGNOSTICO as CodigoOMS,
+            d.Descripcion as DescripcionDiagnostico
           FROM imVisita v
-          INNER JOIN imPaciente p ON v.NumeroDocumento = p.NumeroDocumento
-          LEFT JOIN imDiagnosticos d ON v.NumeroVisita = d.NumeroVisita
-          WHERE v.NumeroVisita = @numeroVisita
-          AND v.Hospital = @hospital
+          INNER JOIN imPacientes p ON v.IDPACIENTE = p.IdPaciente
+          LEFT JOIN imDiagnosticos d ON v.DIAGNOSTICO = d.CodigoOMS
+          WHERE v.NUMEROVISITA = @numeroVisita
         `);
       
       if (result.recordset.length === 0) {
@@ -135,18 +149,18 @@ class VisitsService {
           fechaNacimiento: clarionToDate(v.FechaNacimiento),
           sexo: v.Sexo
         },
-        fechaAdmision: clarionToDate(v.FechaAdmision),
-        horaAdmision: clarionToTime(v.HoraAdmision),
-        fechaEgreso: clarionToDate(v.FechaEgreso),
-        horaEgreso: clarionToTime(v.HoraEgreso),
-        hospital: v.Hospital,
-        sector: v.Sector,
-        clasePaciente: v.ClasePaciente,
-        tipoIngreso: v.TipoIngreso,
-        estado: v.Estado,
-        observaciones: v.Observaciones,
-        diagnostico: v.Diagnostico,
-        tipoDiagnostico: v.TipoDiagnostico
+        fechaAdmision: v.FechaAdmision, // Ya es datetime de SQL Server
+        horaAdmision: v.FechaAdmision ? new Date(v.FechaAdmision).toLocaleTimeString('es-AR') : '00:00:00',
+        fechaEgreso: v.FechaEgreso ? clarionToDate(v.FechaEgreso) : null,
+        horaEgreso: v.HoraEgreso ? clarionToTime(v.HoraEgreso) : '00:00:00',
+        hospital: v.Hospital || '',
+        sector: v.Sector || '',
+        clasePaciente: v.ClasePaciente || '',
+        tipoIngreso: v.TipoIngreso || '',
+        estado: v.Estado || '',
+        observaciones: v.Observaciones || '',
+        diagnostico: v.CodigoOMS ? v.CodigoOMS.trim() : '',
+        descripcionDiagnostico: v.DescripcionDiagnostico ? v.DescripcionDiagnostico.trim() : ''
       };
     } catch (error) {
       console.error('Error al obtener visita:', error);

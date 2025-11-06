@@ -12,7 +12,7 @@ export interface Visit {
   estado: string;
   observaciones: string;
   diagnostico: string;
-  tipoDiagnostico: string;
+  descripcionDiagnostico: string;
 }
 
 export interface VisitDetail extends Visit {
