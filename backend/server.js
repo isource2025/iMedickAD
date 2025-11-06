@@ -12,8 +12,10 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware CORS - Manejo de múltiples orígenes
 const allowedOrigins = process.env.CORS_ORIGIN 
-  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : ['http://localhost:3000'];
+  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim()).filter(origin => origin.length > 0)
+  : ['http://localhost:3000','https://i-medick-ad.vercel.app'];
+
+console.log('🌐 CORS Origins permitidos:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -23,6 +25,7 @@ app.use(cors({
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.log('❌ Origen no permitido:', origin);
       callback(new Error('No permitido por CORS'));
     }
   },
