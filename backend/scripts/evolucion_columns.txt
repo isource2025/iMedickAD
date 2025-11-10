@@ -1,0 +1,5 @@
+IdHCEvolucion IdVisita    NroHC       FechaEv     HoraEv      IdSector Profecional Evolucion                                                                                                                                                                                                                                                        NumeroDocumento
+------------- ----------- ----------- ----------- ----------- -------- ----------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ---------------
+            2       42421           0       80452     4313608 ONC1            5762 PACIENTE CURSANDO SEXTO DIA  POSOPERATORIO POR HEMIGLOSECTOMIA IZQUIERDA. SIN DOLOR. SIGNOS VITALES CONSERVADOS.. RTETIRO SNG. INICIA DIETA LIQUIDA                                                                                                                            0
+
+(1 filas afectadas)

@@ -1,0 +1,4 @@
+Mensaje 207, Nivel 16, Estado 1, Servidor WEBDEV, Línea 16
+El nombre de columna 'Fecha' no es válido.
+Mensaje 207, Nivel 16, Estado 1, Servidor WEBDEV, Línea 17
+El nombre de columna 'Hora' no es válido.

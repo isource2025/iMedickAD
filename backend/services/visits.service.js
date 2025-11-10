@@ -37,7 +37,7 @@ class VisitsService {
             v.VALORSECTOR as Sector,
             v.CLASEPACIENTE as ClasePaciente,
             v.TIPOADMISION as TipoIngreso,
-            v.ESTADO,
+            v.ESTADO as Estado,
             v.OBSERVACIONES as Observaciones,
             v.DIAGNOSTICO as CodigoOMS,
             d.Descripcion as DescripcionDiagnostico
@@ -122,7 +122,7 @@ class VisitsService {
             v.VALORSECTOR as Sector,
             v.CLASEPACIENTE as ClasePaciente,
             v.TIPOADMISION as TipoIngreso,
-            v.ESTADO,
+            v.ESTADO as Estado,
             v.OBSERVACIONES as Observaciones,
             p.ApellidoyNombre,
             p.FechaNacimiento,

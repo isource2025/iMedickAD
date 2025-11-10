@@ -1,0 +1,56 @@
+========================================
+1. Datos de la visita 43900 en imVisita
+========================================
+NUMEROVISITA IDPACIENTE  FECHAADMISIONS         
+------------ ----------- -----------------------
+       43900       19856 2021-04-13 09:16:43.450
+
+(1 filas afectadas)
+ 
+ 
+========================================
+2. Evoluciones con IdVisita = 43900
+========================================
+IdHCEvolucion IdVisita    NroHC       FechaEv     Evolucion_Preview                                                                                                                                                                                                                                               
+------------- ----------- ----------- ----------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+           61       43900           0       80460 PACIENTE FEMENINA DE 60 A�OS DE EDAD, CON ANTECEDE                                                                                                                                                                                                              
+           83       43900           0       80461 PACIENTE FEMENINA QUE NE DIA DE LA FECHA INGRES A                                                                                                                                                                                                               
+          122       43900           0       80462 PACIENTE FEMENINA QUE CURSA PRIMER DIA DE POSOPERA                                                                                                                                                                                                              
+          159       43900           0       80463 PACIENTE FEMININO BUEN ESTA GENERAL, CURDANDO SU 2                                                                                                                                                                                                              
+          160       43900           0       80463 SE DECIDE, POR BUENA EVOLUCION
+1) RETIARA VIA PER                                                                                                                                                                                                              
+
+(5 filas afectadas)
+ 
+ 
+========================================
+3. Verificar relación con NroHC
+========================================
+IdHCEvolucion IdVisita    NroHC       NUMEROVISITA IDPACIENTE  NumeroDocumento TipoRelacion           
+------------- ----------- ----------- ------------ ----------- --------------- -----------------------
+          160       43900           0        43900       19856        94106858 IdVisita = NUMEROVISITA
+          159       43900           0        43900       19856        94106858 IdVisita = NUMEROVISITA
+          122       43900           0        43900       19856        94106858 IdVisita = NUMEROVISITA
+           83       43900           0        43900       19856        94106858 IdVisita = NUMEROVISITA
+           61       43900           0        43900       19856        94106858 IdVisita = NUMEROVISITA
+
+(5 filas afectadas)
+ 
+ 
+========================================
+4. Evoluciones del paciente 94106858
+========================================
+IdHCEvolucion IdVisita    NroHC       FechaEv     NumeroDocumento Evolucion_Preview                                                                                                                                                                                                                                               
+------------- ----------- ----------- ----------- --------------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(0 filas afectadas)
+ 
+ 
+========================================
+5. Relación visita-evolución por documento
+========================================
+NUMEROVISITA FECHAADMISIONS          IdHCEvolucion IdVisita    NroHC       FechaEv     NumeroDocumento
+------------ ----------------------- ------------- ----------- ----------- ----------- ---------------
+       43900 2021-04-13 09:16:43.450          NULL        NULL        NULL        NULL            NULL
+
+(1 filas afectadas)
