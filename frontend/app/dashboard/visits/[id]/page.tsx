@@ -300,10 +300,11 @@ export default function VisitDetailPage() {
                   <tr>
                     <th>Fecha</th>
                     <th>Hora</th>
-                    <th>Troquel</th>
+                    <th>Medicamento</th>
+                    <th>Laboratorio</th>
+                    <th>Presentación</th>
                     <th>Cantidad</th>
                     <th>Unidad</th>
-                    <th>Profesional</th>
                     <th>Observaciones</th>
                   </tr>
                 </thead>
@@ -312,10 +313,11 @@ export default function VisitDetailPage() {
                     <tr key={m.id}>
                       <td>{formatDate(m.fecha)}</td>
                       <td>{m.hora}</td>
-                      <td>{m.troquel}</td>
+                      <td><strong>{m.nombreMedicamento}</strong></td>
+                      <td>{m.laboratorio}</td>
+                      <td>{m.presentacion}</td>
                       <td>{m.cantidad}</td>
                       <td>{m.tipoUnidad}</td>
-                      <td>{m.profesional}</td>
                       <td>{m.observaciones}</td>
                     </tr>
                   ))}
@@ -363,7 +365,7 @@ export default function VisitDetailPage() {
                   <tr>
                     <th>Fecha</th>
                     <th>Tipo</th>
-                    <th>Práctica</th>
+                    <th>Práctica / Procedimiento</th>
                     <th>Cantidad</th>
                     <th>Hora Inicio</th>
                     <th>Hora Fin</th>
@@ -375,7 +377,7 @@ export default function VisitDetailPage() {
                     <tr key={p.id}>
                       <td>{formatDate(p.fecha)}</td>
                       <td>{p.tipo}</td>
-                      <td>{p.practica}</td>
+                      <td><strong>{p.nombrePractica}</strong></td>
                       <td>{p.cantidad}</td>
                       <td>{p.horaInicio}</td>
                       <td>{p.horaFin}</td>

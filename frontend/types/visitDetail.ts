@@ -29,6 +29,9 @@ export interface Medicamento {
   fecha: string | null;
   hora: string;
   troquel: number;
+  nombreMedicamento: string;
+  laboratorio: string;
+  presentacion: string;
   cantidad: number;
   tipoUnidad: string;
   observaciones: string;
@@ -47,6 +50,8 @@ export interface Practica {
   id: number;
   tipo: string;
   practica: number;
+  nombrePractica: string;
+  tipoNomenclador: string;
   cantidad: number;
   fecha: string | null;
   horaInicio: string;
