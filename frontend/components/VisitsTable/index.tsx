@@ -1,5 +1,7 @@
 'use client';
 
+import { Visit } from '@/types/visit';
+import { useRouter } from 'next/navigation';
 import { useVisits } from '@/hooks/useVisits';
 import styles from './styles.module.css';
 
@@ -9,6 +11,7 @@ interface VisitsTableProps {
 }
 
 export default function VisitsTable({ numeroDocumento, patientName }: VisitsTableProps) {
+  const router = useRouter();
   const {
     visits,
     isLoading,
@@ -75,7 +78,11 @@ export default function VisitsTable({ numeroDocumento, patientName }: VisitsTabl
               </thead>
               <tbody>
                 {visits.map((visit) => (
-                  <tr key={visit.numeroVisita}>
+                  <tr 
+                    key={visit.numeroVisita}
+                    onClick={() => router.push(`/dashboard/visits/${visit.numeroVisita}`)}
+                    className={styles.clickableRow}
+                  >
                     <td className={styles.visitNumber}>{visit.numeroVisita}</td>
                     <td>
                       <div>{formatDate(visit.fechaAdmision)}</div>
