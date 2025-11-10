@@ -145,18 +145,22 @@ class VisitDetailService {
         .input('numeroVisita', sql.Int, numeroVisita)
         .query(`
           SELECT TOP 100
-            IDCtrlMedica,
-            NumeroVisita,
-            FechaControl,
-            HoraControl,
-            Troquel,
-            Cantidad,
-            TipoUnidad,
-            Observaciones,
-            Profesional
-          FROM imInterCtrlMedicamento
-          WHERE NumeroVisita = @numeroVisita
-          ORDER BY FechaControl DESC, HoraControl DESC
+            m.IDCtrlMedica,
+            m.NumeroVisita,
+            m.FechaControl,
+            m.HoraControl,
+            m.Troquel,
+            v.Nombre as NombreMedicamento,
+            v.Laboratorio,
+            v.Presentacion,
+            m.Cantidad,
+            m.TipoUnidad,
+            m.Observaciones,
+            m.Profesional
+          FROM imInterCtrlMedicamento m
+          LEFT JOIN imVademecum v ON m.Troquel = v.Troquel
+          WHERE m.NumeroVisita = @numeroVisita
+          ORDER BY m.FechaControl DESC, m.HoraControl DESC
         `);
       
       return result.recordset.map(m => ({
@@ -164,6 +168,9 @@ class VisitDetailService {
         fecha: m.FechaControl ? clarionToDate(m.FechaControl) : null,
         hora: m.HoraControl ? clarionToTime(m.HoraControl) : '00:00:00',
         troquel: m.Troquel || 0,
+        nombreMedicamento: m.NombreMedicamento || 'Medicamento no encontrado',
+        laboratorio: m.Laboratorio || '',
+        presentacion: m.Presentacion || '',
         cantidad: m.Cantidad || 0,
         tipoUnidad: m.TipoUnidad ? m.TipoUnidad.trim() : '',
         observaciones: m.Observaciones || '',
@@ -225,24 +232,29 @@ class VisitDetailService {
       .input('numeroVisita', sql.Int, numeroVisita)
       .query(`
         SELECT TOP 100
-          Valor,
-          NumeroVisita,
-          TipoPractica,
-          Practica,
-          CantidadPractica,
-          FechaPractica,
-          HoraPracticaInicio,
-          HoraPracticaFin,
-          Observaciones
-        FROM imFacPracticas
-        WHERE NumeroVisita = @numeroVisita
-        ORDER BY FechaPractica DESC
+          p.Valor,
+          p.NumeroVisita,
+          p.TipoPractica,
+          p.Practica,
+          n.Descripcion as NombrePractica,
+          n.Tipo as TipoNomenclador,
+          p.CantidadPractica,
+          p.FechaPractica,
+          p.HoraPracticaInicio,
+          p.HoraPracticaFin,
+          p.Observaciones
+        FROM imFacPracticas p
+        LEFT JOIN VUnionModuladasNomenclador n ON p.Practica = n.IDPractica
+        WHERE p.NumeroVisita = @numeroVisita
+        ORDER BY p.FechaPractica DESC
       `);
     
     return result.recordset.map(p => ({
       id: p.Valor,
       tipo: p.TipoPractica ? p.TipoPractica.trim() : '',
       practica: p.Practica || 0,
+      nombrePractica: p.NombrePractica || 'Práctica no encontrada',
+      tipoNomenclador: p.TipoNomenclador ? p.TipoNomenclador.trim() : '',
       cantidad: p.CantidadPractica || 0,
       fecha: p.FechaPractica ? clarionToDate(p.FechaPractica) : null,
       horaInicio: p.HoraPracticaInicio ? clarionToTime(p.HoraPracticaInicio) : '00:00:00',
