@@ -14,13 +14,14 @@ class VisitDetailService {
       console.log('═══════════════════════════════════════════════════════');
       
       // Obtener datos relacionados en paralelo
-      const [visita, hci, medicamentos, evoluciones, practicas, epicrisis] = await Promise.all([
+      const [visita, hci, medicamentos, evoluciones, practicas, epicrisis, estudios] = await Promise.all([
         this.obtenerVisitaBasica(pool, numeroVisita),
         this.obtenerHCI(pool, numeroVisita),
         this.obtenerMedicamentos(pool, numeroVisita),
         this.obtenerEvoluciones(pool, numeroVisita),
         this.obtenerPracticas(pool, numeroVisita),
-        this.obtenerEpicrisis(pool, numeroVisita)
+        this.obtenerEpicrisis(pool, numeroVisita),
+        this.obtenerEstudios(pool, numeroVisita)
       ]);
       
       if (!visita) {
@@ -37,6 +38,7 @@ class VisitDetailService {
       console.log('💊 Medicamentos:', medicamentos.length);
       console.log('📝 Evoluciones:', evoluciones.length);
       console.log('🏥 Prácticas:', practicas.length);
+      console.log('🔬 Estudios:', estudios.length);
       console.log('📋 Epicrisis:', epicrisis ? '✅ SÍ' : '❌ NO');
       console.log('═══════════════════════════════════════════════════════');
       
@@ -46,7 +48,8 @@ class VisitDetailService {
         medicamentos,
         evoluciones,
         practicas,
-        epicrisis
+        epicrisis,
+        estudios
       };
     } catch (error) {
       console.error('Error al obtener detalle de visita:', error);
@@ -299,6 +302,53 @@ class VisitDetailService {
       diagnostico: e.Diagnostico ? e.Diagnostico.trim() : '',
       diagnosticoTexto: e.DiagnosticoText || ''
     };
+  }
+
+  /**
+   * Obtener estudios (pedidos y resultados)
+   */
+  async obtenerEstudios(pool, numeroVisita) {
+    console.log('🔍 [7/7] Buscando estudios y resultados...');
+    try {
+      const result = await pool.request()
+        .input('idVisita', sql.Int, numeroVisita)
+        .query(`
+          SELECT 
+            pe.IdPedido,
+            pe.FechaPedido,
+            pe.NotasObservacion as PedidoEstudio,
+            pe.IdProtocolo,
+            pe.EstadoUrgencia,
+            pr.IdProtocolo as ProtocoloResultadoId,
+            pr.FechaResultado,
+            pr.FechaCarga,
+            pr.TextoProtocolo as ResultadoEstudio,
+            pr.NroProtocolo,
+            pr.Estado as EstadoResultado
+          FROM imPedidosEstudios pe
+          LEFT JOIN imProtocolosResultados pr ON pe.IdProtocolo = pr.IdProtocolo
+          WHERE pe.IdVisita = @idVisita
+          ORDER BY pe.FechaPedido DESC
+        `);
+      
+      return result.recordset.map(e => ({
+        id: e.IdPedido,
+        fechaPedido: e.FechaPedido || null,
+        pedidoEstudio: e.PedidoEstudio || '',
+        idProtocolo: e.IdProtocolo || null,
+        estadoUrgencia: e.EstadoUrgencia ? e.EstadoUrgencia.trim() : '',
+        // Datos del resultado
+        tieneResultado: !!e.ProtocoloResultadoId,
+        fechaResultado: e.FechaResultado || null,
+        fechaCarga: e.FechaCarga || null,
+        resultadoEstudio: e.ResultadoEstudio || '',
+        nroProtocolo: e.NroProtocolo ? e.NroProtocolo.trim() : '',
+        estadoResultado: e.EstadoResultado ? e.EstadoResultado.trim() : ''
+      }));
+    } catch (error) {
+      console.error('Error al obtener estudios:', error);
+      return []; // Retornar array vacío si hay error
+    }
   }
 }
 
