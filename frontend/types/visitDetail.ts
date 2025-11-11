@@ -69,6 +69,20 @@ export interface Epicrisis {
   diagnosticoTexto: string;
 }
 
+export interface Estudio {
+  id: number;
+  fechaPedido: string | null;
+  pedidoEstudio: string;
+  idProtocolo: number | null;
+  estadoUrgencia: string;
+  tieneResultado: boolean;
+  fechaResultado: string | null;
+  fechaCarga: string | null;
+  resultadoEstudio: string;
+  nroProtocolo: string;
+  estadoResultado: string;
+}
+
 export interface VisitDetail {
   visita: VisitBasic;
   historiaClinicaIngreso: HistoriaClinicaIngreso | null;
@@ -76,4 +90,5 @@ export interface VisitDetail {
   evoluciones: Evolucion[];
   practicas: Practica[];
   epicrisis: Epicrisis | null;
+  estudios: Estudio[];
 }

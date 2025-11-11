@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import visitDetailService from '@/services/visitDetailService';
 import { VisitDetail } from '@/types/visitDetail';
+import { rtfToText } from '@/utils/rtfToText';
 import styles from './styles.module.css';
 
 export default function VisitDetailPage() {
@@ -188,6 +189,12 @@ export default function VisitDetailPage() {
           onClick={() => setActiveTab('practicas')}
         >
           Prácticas ({detalle.practicas.length})
+        </button>
+        <button
+          className={activeTab === 'estudios' ? styles.tabActive : styles.tab}
+          onClick={() => setActiveTab('estudios')}
+        >
+          Estudios ({detalle.estudios.length})
         </button>
         <button
           className={activeTab === 'epicrisis' ? styles.tabActive : styles.tab}
@@ -385,6 +392,66 @@ export default function VisitDetailPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+
+        {/* Estudios */}
+        {activeTab === 'estudios' && (
+          <div className={styles.section}>
+            <h2>Estudios y Resultados</h2>
+            {detalle.estudios.length === 0 && (
+              <p className={styles.noData}>No hay estudios registrados</p>
+            )}
+            {detalle.estudios.map((est) => (
+              <div key={est.id} className={styles.estudioCard}>
+                <div className={styles.estudioHeader}>
+                  <div className={styles.estudioInfo}>
+                    <span className={styles.estudioFecha}>
+                      Pedido: {formatDate(est.fechaPedido)}
+                    </span>
+                    {est.nroProtocolo && (
+                      <span className={styles.estudioProtocolo}>
+                        Protocolo: {est.nroProtocolo}
+                      </span>
+                    )}
+                    {est.estadoUrgencia && (
+                      <span className={styles.estudioUrgencia}>
+                        {est.estadoUrgencia}
+                      </span>
+                    )}
+                  </div>
+                  {est.tieneResultado && est.fechaResultado && (
+                    <span className={styles.estudioResultadoFecha}>
+                      Resultado: {formatDate(est.fechaResultado)}
+                    </span>
+                  )}
+                </div>
+                
+                <div className={styles.estudioComparativa}>
+                  {/* Pedido */}
+                  <div className={styles.estudioColumna}>
+                    <h3 className={styles.estudioSubtitle}>📋 Pedido de Estudio</h3>
+                    <div className={styles.estudioTexto}>
+                      {est.pedidoEstudio || 'Sin observaciones'}
+                    </div>
+                  </div>
+                  
+                  {/* Resultado */}
+                  <div className={styles.estudioColumna}>
+                    <h3 className={styles.estudioSubtitle}>
+                      {est.tieneResultado ? '✅ Resultado' : '⏳ Pendiente'}
+                    </h3>
+                    <div className={styles.estudioTexto}>
+                      {est.tieneResultado && est.resultadoEstudio ? (
+                        rtfToText(est.resultadoEstudio)
+                      ) : (
+                        <p className={styles.noData}>Resultado pendiente</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
