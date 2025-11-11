@@ -301,7 +301,6 @@ export default function VisitDetailPage() {
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Medicamento</th>
-                    <th>Laboratorio</th>
                     <th>Presentación</th>
                     <th>Cantidad</th>
                     <th>Unidad</th>
@@ -314,7 +313,6 @@ export default function VisitDetailPage() {
                       <td>{formatDate(m.fecha)}</td>
                       <td>{m.hora}</td>
                       <td><strong>{m.nombreMedicamento}</strong></td>
-                      <td>{m.laboratorio}</td>
                       <td>{m.presentacion}</td>
                       <td>{m.cantidad}</td>
                       <td>{m.tipoUnidad}</td>
@@ -364,7 +362,7 @@ export default function VisitDetailPage() {
                 <thead>
                   <tr>
                     <th>Fecha</th>
-                    <th>Tipo</th>
+                    <th>Código</th>
                     <th>Práctica / Procedimiento</th>
                     <th>Cantidad</th>
                     <th>Hora Inicio</th>
@@ -376,7 +374,7 @@ export default function VisitDetailPage() {
                   {detalle.practicas.map((p) => (
                     <tr key={p.id}>
                       <td>{formatDate(p.fecha)}</td>
-                      <td>{p.tipo}</td>
+                      <td>{p.practica}</td>
                       <td><strong>{p.nombrePractica}</strong></td>
                       <td>{p.cantidad}</td>
                       <td>{p.horaInicio}</td>
