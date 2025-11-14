@@ -1,17 +1,24 @@
 /**
- * Convierte fecha Clarion a JavaScript Date
+ * Convierte fecha Clarion a formato ISO date string (YYYY-MM-DD)
  * Formato Clarion: días desde 28/12/1800
+ * Retorna string en formato ISO para evitar problemas de timezone
  */
 function clarionToDate(clarionDate) {
   if (!clarionDate || clarionDate <= 0 || clarionDate > 2958465) {
     return null;
   }
   
-  const baseDate = new Date('1800-12-28');
+  // Usar UTC para evitar problemas de timezone
+  const baseDate = new Date(Date.UTC(1800, 11, 28)); // 28 de diciembre de 1800
   const resultDate = new Date(baseDate);
-  resultDate.setDate(baseDate.getDate() + clarionDate - 1);
+  resultDate.setUTCDate(baseDate.getUTCDate() + clarionDate - 1);
   
-  return resultDate;
+  // Retornar en formato ISO date string (YYYY-MM-DD)
+  const year = resultDate.getUTCFullYear();
+  const month = String(resultDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(resultDate.getUTCDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
 }
 
 /**

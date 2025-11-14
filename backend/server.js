@@ -6,6 +6,7 @@ const { getConnection, closeConnection } = require('./config/db');
 const authRoutes = require('./routes/auth.routes');
 const patientsRoutes = require('./routes/patients.routes');
 const visitsRoutes = require('./routes/visits.routes');
+const archivosRoutes = require('./routes/archivos.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientsRoutes);
 app.use('/api/visits', visitsRoutes);
+app.use('/api/archivos', archivosRoutes);
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {

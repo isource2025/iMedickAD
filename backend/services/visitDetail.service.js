@@ -128,14 +128,13 @@ class VisitDetailService {
         SELECT *
         FROM imHCI
         WHERE NumeroVisita = @numeroVisita
+        ORDER BY Fecha DESC
       `);
     
-    if (result.recordset.length === 0) {
-      return null;
-    }
+    console.log('   ✅ HCI encontradas:', result.recordset.length);
     
-    // Retornar todos los campos tal como vienen de la BD
-    return result.recordset[0];
+    // Retornar todas las HCI como array
+    return result.recordset;
   }
   
   /**
@@ -196,15 +195,17 @@ class VisitDetailService {
       .input('idVisita', sql.Int, numeroVisita)
       .query(`
         SELECT 
-          IdHCEvolucion,
-          IdVisita,
-          FechaEv,
-          HoraEv,
-          Profecional,
-          Evolucion
-        FROM imHCEvolucion
-        WHERE IdVisita = @idVisita
-        ORDER BY FechaEv DESC, HoraEv DESC
+          e.IdHCEvolucion,
+          e.IdVisita,
+          e.FechaEv,
+          e.HoraEv,
+          e.Profecional,
+          e.Evolucion,
+          p.ApellidoNombre as NombreProfesional
+        FROM imHCEvolucion e
+        LEFT JOIN imPersonal p ON e.Profecional = p.Matricula
+        WHERE e.IdVisita = @idVisita
+        ORDER BY e.FechaEv DESC, e.HoraEv DESC
       `);
     
     console.log('   ✅ Evoluciones encontradas:', result.recordset.length);
@@ -212,6 +213,7 @@ class VisitDetailService {
       console.log('   → Primera evolución:');
       console.log('      - ID:', result.recordset[0].IdHCEvolucion);
       console.log('      - Fecha:', result.recordset[0].FechaEv);
+      console.log('      - Profesional:', result.recordset[0].Profecional, '-', result.recordset[0].NombreProfesional || 'Sin nombre');
       console.log('      - Preview:', result.recordset[0].Evolucion ? result.recordset[0].Evolucion.substring(0, 80) + '...' : 'Sin texto');
     } else {
       console.log('   ⚠️  NO se encontraron evoluciones para IdVisita =', numeroVisita);
@@ -221,7 +223,9 @@ class VisitDetailService {
       id: e.IdHCEvolucion,
       fecha: e.FechaEv ? clarionToDate(e.FechaEv) : null,
       hora: e.HoraEv ? clarionToTime(e.HoraEv) : '00:00:00',
-      profesional: e.Profecional || 0,
+      profesionalId: e.Profecional || 0,
+      profesionalNombre: e.NombreProfesional || null,
+      profesionalUsuario: null,
       evolucion: e.Evolucion || ''
     }));
   }
@@ -275,16 +279,18 @@ class VisitDetailService {
       .input('idVisita', sql.Int, numeroVisita)
       .query(`
         SELECT 
-          IdHCEpicrisis,
-          IdVisita,
-          Fecha,
-          Hora,
-          Profecional,
-          Epicrisis,
-          Diagnostico,
-          DiagnosticoText
-        FROM imHCEpicrisis
-        WHERE IdVisita = @idVisita
+          ep.IdHCEpicrisis,
+          ep.IdVisita,
+          ep.Fecha,
+          ep.Hora,
+          ep.Profecional,
+          ep.Epicrisis,
+          ep.Diagnostico,
+          ep.DiagnosticoText,
+          p.ApellidoNombre as NombreProfesional
+        FROM imHCEpicrisis ep
+        LEFT JOIN imPersonal p ON ep.Profecional = p.Matricula
+        WHERE ep.IdVisita = @idVisita
       `);
     
     if (result.recordset.length === 0) {
@@ -297,7 +303,9 @@ class VisitDetailService {
       id: e.IdHCEpicrisis,
       fecha: e.Fecha,
       hora: e.Hora ? clarionToTime(e.Hora) : '00:00:00',
-      profesional: e.Profecional || 0,
+      profesionalId: e.Profecional || 0,
+      profesionalNombre: e.NombreProfesional || null,
+      profesionalUsuario: null,
       epicrisis: e.Epicrisis || '',
       diagnostico: e.Diagnostico ? e.Diagnostico.trim() : '',
       diagnosticoTexto: e.DiagnosticoText || ''
@@ -331,20 +339,63 @@ class VisitDetailService {
           ORDER BY pe.FechaPedido DESC
         `);
       
-      return result.recordset.map(e => ({
-        id: e.IdPedido,
-        fechaPedido: e.FechaPedido || null,
-        pedidoEstudio: e.PedidoEstudio || '',
-        idProtocolo: e.IdProtocolo || null,
-        estadoUrgencia: e.EstadoUrgencia ? e.EstadoUrgencia.trim() : '',
-        // Datos del resultado
-        tieneResultado: !!e.ProtocoloResultadoId,
-        fechaResultado: e.FechaResultado || null,
-        fechaCarga: e.FechaCarga || null,
-        resultadoEstudio: e.ResultadoEstudio || '',
-        nroProtocolo: e.NroProtocolo ? e.NroProtocolo.trim() : '',
-        estadoResultado: e.EstadoResultado ? e.EstadoResultado.trim() : ''
-      }));
+      // Obtener TODOS los adjuntos de la visita (una sola vez)
+      const adjuntosResult = await pool.request()
+        .input('numeroVisita', sql.Int, numeroVisita)
+        .query(`
+          SELECT 
+            IdAdjunto,
+            NumeroVisita,
+            IdProtocolo,
+            Patch,
+            PatchServidor,
+            Descripcion,
+            Fecha
+          FROM imPedidosEstudiosAdjuntos
+          WHERE NumeroVisita = @numeroVisita
+        `);
+      
+      console.log(`   → Adjuntos encontrados: ${adjuntosResult.recordset.length}`);
+      
+      // Crear estudios y asignar adjuntos
+      const estudios = [];
+      for (const e of result.recordset) {
+        // Filtrar adjuntos que corresponden a este estudio (por IdProtocolo)
+        // Si IdProtocolo es 0 o NULL, asignar todos los adjuntos sin protocolo
+        const adjuntosDelEstudio = adjuntosResult.recordset.filter(adj => {
+          if (e.IdProtocolo && e.IdProtocolo !== 0) {
+            return adj.IdProtocolo === e.IdProtocolo;
+          }
+          // Si el estudio no tiene protocolo, incluir adjuntos sin protocolo
+          return !adj.IdProtocolo || adj.IdProtocolo === 0;
+        });
+        
+        estudios.push({
+          id: e.IdPedido,
+          fechaPedido: e.FechaPedido || null,
+          pedidoEstudio: e.PedidoEstudio || '',
+          idProtocolo: e.IdProtocolo || null,
+          estadoUrgencia: e.EstadoUrgencia ? e.EstadoUrgencia.trim() : '',
+          // Datos del resultado
+          tieneResultado: !!e.ProtocoloResultadoId,
+          fechaResultado: e.FechaResultado || null,
+          fechaCarga: e.FechaCarga || null,
+          resultadoEstudio: e.ResultadoEstudio || '',
+          nroProtocolo: e.NroProtocolo ? e.NroProtocolo.trim() : '',
+          estadoResultado: e.EstadoResultado ? e.EstadoResultado.trim() : '',
+          // Adjuntos
+          adjuntos: adjuntosDelEstudio.map(adj => ({
+            id: adj.IdAdjunto,
+            numeroVisita: adj.NumeroVisita,
+            idProtocolo: adj.IdProtocolo,
+            pathServidor: adj.PatchServidor || adj.Patch || '',
+            nombreArchivo: adj.Descripcion || '',
+            fechaSubida: adj.Fecha || null
+          }))
+        });
+      }
+      
+      return estudios;
     } catch (error) {
       console.error('Error al obtener estudios:', error);
       return []; // Retornar array vacío si hay error
