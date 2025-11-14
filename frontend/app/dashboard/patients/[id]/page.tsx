@@ -76,6 +76,12 @@ export default function PatientDetailPage({ params }: { params: { id: string } }
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '-';
+    // Si es formato ISO date (YYYY-MM-DD), parsearlo como fecha local
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return `${day}/${month}/${year}`;
+    }
+    // Para otros formatos, usar Date
     const date = new Date(dateStr);
     return date.toLocaleDateString('es-AR');
   };

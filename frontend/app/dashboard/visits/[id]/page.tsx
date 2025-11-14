@@ -35,6 +35,12 @@ export default function VisitDetailPage() {
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '-';
+    // Si es formato ISO date (YYYY-MM-DD), parsearlo como fecha local
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return `${day}/${month}/${year}`;
+    }
+    // Para otros formatos, usar Date
     const date = new Date(dateStr);
     return date.toLocaleDateString('es-AR');
   };
@@ -210,18 +216,28 @@ export default function VisitDetailPage() {
         {activeTab === 'hci' && (
           <div className={styles.section}>
             <h2>Historia Clínica de Ingreso</h2>
-            {!detalle.historiaClinicaIngreso && (
+            {detalle.historiaClinicaIngreso.length === 0 && (
               <p className={styles.noData}>No hay historia clínica de ingreso registrada</p>
             )}
-            {detalle.historiaClinicaIngreso && (
-              <div className={styles.hciContainer}>
+            {detalle.historiaClinicaIngreso.map((hci, index) => (
+              <div key={index} className={styles.hciContainer}>
+                <div className={styles.hciHeader}>
+                  <h3 className={styles.hciTitle}>
+                    {detalle.historiaClinicaIngreso.length > 1 ? `Historia Clínica #${index + 1}` : 'Historia Clínica de Ingreso'}
+                  </h3>
+                  <div className={styles.hciMeta}>
+                    {hci.Fecha && <span className={styles.hciDate}>Fecha: {new Date(hci.Fecha).toLocaleString('es-AR')}</span>}
+                    {hci.IdProfecional && <span className={styles.hciProfesional}>Profesional: {hci.IdProfecional}</span>}
+                  </div>
+                </div>
+                
                 {renderHCISection('Motivo de Consulta', [
                   { label: 'Motivo', field: 'MotivoConsulta' }
-                ], detalle.historiaClinicaIngreso)}
+                ], hci)}
                 
                 {renderHCISection('Enfermedad Actual', [
                   { label: 'Descripción', field: 'EnfermedadActual' }
-                ], detalle.historiaClinicaIngreso)}
+                ], hci)}
                 
                 {renderHCISection('Signos Vitales', [
                   { label: 'Glucemia', field: 'SV_GLUCEMIA' },
@@ -231,66 +247,233 @@ export default function VisitDetailPage() {
                   { label: 'Temperatura', field: 'SV_TAX' },
                   { label: 'Impresión General', field: 'SV_IMPRESIONGENERAL' },
                   { label: 'Facie', field: 'SV_FACIE' },
-                  { label: 'Decúbito', field: 'SV_DECUBITO' }
-                ], detalle.historiaClinicaIngreso)}
+                  { label: 'Decúbito', field: 'SV_DECUBITO' },
+                  { label: 'Marcha', field: 'SV_MARCHA' },
+                  { label: 'Talla', field: 'SV_TALLA' },
+                  { label: 'Peso Actual', field: 'SV_PESOACTUAL' },
+                  { label: 'Peso Habitual', field: 'SV_PESOHABITUAL' },
+                  { label: 'Estado Nutricional', field: 'SV_ESTADONUTRICIONAL' },
+                  { label: 'Varices', field: 'SV_VARICES' },
+                  { label: 'Flebitis', field: 'SV_FLEBITIS' },
+                  { label: 'Trombosis', field: 'SV_TROMBOSIS' },
+                  { label: 'Circulación Colateral', field: 'SV_CIRCULACIONCOLATERAL' },
+                  { label: 'Texto Adicional', field: 'SV_TEXTO' }
+                ], hci)}
                 
-                {renderHCISection('Examen Físico General', [
-                  { label: 'Biotipo', field: 'EFG_BIOTIPO' },
-                  { label: 'Peso', field: 'EFG_PESO' },
-                  { label: 'Talla', field: 'EFG_TALLA' },
-                  { label: 'IMC', field: 'EFG_IMC' },
-                  { label: 'Piel', field: 'EFG_PIEL' },
-                  { label: 'Hidratación', field: 'EFG_HIDRATACION' },
-                  { label: 'Nutrición', field: 'EFG_NUTRICION' }
-                ], detalle.historiaClinicaIngreso)}
+                {renderHCISection('Piel y Faneras', [
+                  { label: 'Coloración', field: 'PF_COLORACION' },
+                  { label: 'Humedad', field: 'PF_HUMEDAD' },
+                  { label: 'Temperatura', field: 'PF_TEMPERATURA' },
+                  { label: 'Distribución Pilosa', field: 'PF_DISTRIBUCIONPILOSA' },
+                  { label: 'Elasticidad', field: 'PF_ELASTICIDAD' },
+                  { label: 'Uñas', field: 'PF_UNIAS' },
+                  { label: 'Cicatrices', field: 'PF_CICATRICES' },
+                  { label: 'Texto Adicional', field: 'PF_TEXTO' }
+                ], hci)}
                 
-                {renderHCISection('Cabeza y Cuello', [
-                  { label: 'Cabeza', field: 'CYC_CABEZA' },
-                  { label: 'Ojos', field: 'CYC_OJOS' },
-                  { label: 'Pupilas', field: 'CYC_PUPILAS' },
-                  { label: 'Nariz', field: 'CYC_NARIZ' },
-                  { label: 'Boca', field: 'CYC_BOCA' },
-                  { label: 'Cuello', field: 'CYC_CUELLO' }
-                ], detalle.historiaClinicaIngreso)}
+                {renderHCISection('Tejido Celular Subcutáneo', [
+                  { label: 'Distribución', field: 'TCS_DISTRIBUCION' },
+                  { label: 'Cantidad', field: 'TCS_CANTIDAD' },
+                  { label: 'Nódulos', field: 'TCS_NODULOS' },
+                  { label: 'Enfisema', field: 'TCS_ENFISEMA' },
+                  { label: 'Edemas', field: 'TCS_EDEMAS' },
+                  { label: 'Texto Adicional', field: 'TCS_TEXTO' }
+                ], hci)}
+                
+                {renderHCISection('Sistema Linfático', [
+                  { label: 'Linfangitis', field: 'SL_LINFANGITIS' },
+                  { label: 'Adenomegalias', field: 'SL_ADENOMEGALIAS' },
+                  { label: 'Texto Adicional', field: 'SL_TEXTO' }
+                ], hci)}
+                
+                {renderHCISection('Sistema Osteoarticular y Muscular', [
+                  { label: 'Músculo Trofismo Sensibilidad', field: 'SOAM_MUSCULOTROFISMOSENSIBILIDAD' },
+                  { label: 'Huesos', field: 'SOAM_HUESOS' },
+                  { label: 'Columna Vertebral', field: 'SOAM_COLUMNAVERTEBRAL' },
+                  { label: 'Articulaciones', field: 'SOAM_ARTICULACIONES' },
+                  { label: 'Índice Tobillo-Brazo Derecha', field: 'SOAM_INDICETOBILLOBRAZODERECHA' },
+                  { label: 'Índice Tobillo-Brazo Izquierda', field: 'SOAM_INDICETOBILLOBRAZOIZQUIERA' },
+                  { label: 'Perímetro MID', field: 'SOAM_PERIMETROMID' },
+                  { label: 'Perímetro MII', field: 'SOAM_PERIMETROMII' },
+                  { label: 'Texto Adicional', field: 'SOAM_TEXTO' }
+                ], hci)}
+                
+                {renderHCISection('Cabeza', [
+                  { label: 'Forma', field: 'C_FORMA' },
+                  { label: 'Tamaño', field: 'C_TAMANIO' },
+                  { label: 'Ojos', field: 'C_OJOS' },
+                  { label: 'Pupilas', field: 'C_PUPILAS' },
+                  { label: 'Conjuntivas', field: 'C_CONJUNTIVAS' },
+                  { label: 'Córneas', field: 'C_CORNEAS' },
+                  { label: 'Escleróticas', field: 'C_ESCLEROTICAS' },
+                  { label: 'Párpados', field: 'C_PARPADOS' },
+                  { label: 'Fosas Nasales', field: 'C_FOSASNASALES' },
+                  { label: 'Boca', field: 'C_BOCA' },
+                  { label: 'Labios', field: 'C_LABIOS' },
+                  { label: 'Encías', field: 'C_ENCIAS' },
+                  { label: 'Fauces', field: 'C_FAUCES' },
+                  { label: 'Lengua', field: 'C_LENGUA' },
+                  { label: 'Dientes', field: 'C_DIENTES' },
+                  { label: 'Glándulas Salivales', field: 'C_GLANDULASSALIVALES' },
+                  { label: 'Pabellones Auriculares y CAE', field: 'C_PABELLONESAURICULARESYCAE' },
+                  { label: 'Texto Adicional', field: 'C_TEXTO' }
+                ], hci)}
+                
+                {renderHCISection('Cuello', [
+                  { label: 'Conformación', field: 'CU_CONFORMACION' },
+                  { label: 'Laringe', field: 'CU_LARINGE' },
+                  { label: 'Hueco Supraclavicular', field: 'CU_HUECOSUPRACLAVICULAR' },
+                  { label: 'Hueco Infraclavicular', field: 'CU_HUECOINFRACLAVICULAR' },
+                  { label: 'Yugulares', field: 'CU_YUGULARES' },
+                  { label: 'Tiroides', field: 'CU_TIROIDES' },
+                  { label: 'Texto Adicional', field: 'CU_TEXTO' }
+                ], hci)}
+                
+                {renderHCISection('Mamas', [
+                  { label: 'Simetría', field: 'M_SIMETRIA' },
+                  { label: 'Nódulos', field: 'M_NODULOS' },
+                  { label: 'Tamaño', field: 'MI_TAMANO' },
+                  { label: 'Superficie', field: 'MI_SUPERFICIE' },
+                  { label: 'Areolas', field: 'MI_AREOLAS' },
+                  { label: 'Pezones', field: 'MI_PEZONES' },
+                  { label: 'Maniobra Pectorales', field: 'MI_MANIOBRAPECTORALES' },
+                  { label: 'Texto Adicional', field: 'MI_TEXTO' }
+                ], hci)}
                 
                 {renderHCISection('Aparato Respiratorio', [
+                  { label: 'Tórax', field: 'AR_TORAX' },
+                  { label: 'Forma', field: 'AR_FORMA' },
+                  { label: 'Elasticidad', field: 'AR_ELASTICIDAD' },
+                  { label: 'Tipo Respiratorio', field: 'AR_TIPORESPIRATORIO' },
+                  { label: 'Expansión de Vértices', field: 'AR_EXPANSIONDEVERTICES' },
+                  { label: 'Bases', field: 'AR_BASES' },
+                  { label: 'Vibraciones Vocales', field: 'AR_VIBRACIONESVOCALES' },
                   { label: 'Inspección', field: 'AR_INSPECCION' },
                   { label: 'Palpación', field: 'AR_PALPACION' },
                   { label: 'Percusión', field: 'AR_PERCUSION' },
-                  { label: 'Auscultación', field: 'AR_AUSCULTACION' }
-                ], detalle.historiaClinicaIngreso)}
+                  { label: 'Auscultación', field: 'AR_AUSCULTACION' },
+                  { label: 'Texto Adicional', field: 'AR_TEXTO' }
+                ], hci)}
                 
                 {renderHCISection('Aparato Cardiovascular', [
-                  { label: 'Inspección', field: 'ACV_INSPECCION' },
-                  { label: 'Palpación', field: 'ACV_PALPACION' },
-                  { label: 'Auscultación', field: 'ACV_AUSCULTACION' },
-                  { label: 'Pulsos', field: 'ACV_PULSOS' }
-                ], detalle.historiaClinicaIngreso)}
+                  { label: 'Frecuencia Cardíaca', field: 'AC_FRECUENCIACARDIACA' },
+                  { label: 'Central', field: 'AC_CENTRAL' },
+                  { label: 'Periférica', field: 'AC_PERIFERICA' },
+                  { label: 'Pulso Radial', field: 'AC_PULSORADIAL' },
+                  { label: 'Relleno Capilar', field: 'AC_RELLENOAPILAR' },
+                  { label: 'Latido Apexiano', field: 'AC_LATIDOAPEXIANO' },
+                  { label: 'Latidos Palpables', field: 'AC_LATIDOPALPABLES' },
+                  { label: 'Auscultación', field: 'AC_AUSCULTACION' },
+                  { label: 'R1', field: 'AC_R1' },
+                  { label: 'R2', field: 'AC_R2' },
+                  { label: 'Ruidos Agregados', field: 'AC_RUIDOSAGREGADOS' },
+                  { label: 'Frotes', field: 'AC_FROTES' },
+                  { label: 'Soplos', field: 'AC_SOPLOS' },
+                  { label: 'Palpación', field: 'AC_PALPACION' },
+                  { label: 'Pulsos', field: 'AC_PULSOS' },
+                  { label: 'Texto Adicional', field: 'AC_TEXTO' }
+                ], hci)}
                 
                 {renderHCISection('Abdomen', [
-                  { label: 'Inspección', field: 'ABD_INSPECCION' },
-                  { label: 'Palpación', field: 'ABD_PALPACION' },
-                  { label: 'Percusión', field: 'ABD_PERCUSION' },
-                  { label: 'Auscultación', field: 'ABD_AUSCULTACION' }
-                ], detalle.historiaClinicaIngreso)}
+                  { label: 'Inspección', field: 'A_INSPECCION' },
+                  { label: 'Palpación', field: 'A_PALPACION' },
+                  { label: 'Superficial', field: 'A_SUPERFICIAL' },
+                  { label: 'Profunda', field: 'A_PROFUNDA' },
+                  { label: 'Percusión', field: 'A_PERCUSION' },
+                  { label: 'Hígado', field: 'A_HIGADO' },
+                  { label: 'Límite Superior', field: 'A_LIMTESUP' },
+                  { label: 'Límite Inferior', field: 'A_LIMTEINF' },
+                  { label: 'Altura', field: 'A_ALTURA' },
+                  { label: 'Características', field: 'A_CARACTERISTICAS' },
+                  { label: 'Auscultación', field: 'A_AUSCULTACION' },
+                  { label: 'RHA', field: 'A_RHA' },
+                  { label: 'Soplos', field: 'A_SOPLOS' },
+                  { label: 'Celda Esplénica', field: 'A_CELDAESPLENICA' },
+                  { label: 'Bazo', field: 'A_BAZO' },
+                  { label: 'Perímetro', field: 'A_PERIMETRO' },
+                  { label: 'Texto Adicional', field: 'A_TEXTO' }
+                ], hci)}
+                
+                {renderHCISection('Aparato Urogenital', [
+                  { label: 'Genitales Externos', field: 'AUG_GENITALESEXTERNOS' },
+                  { label: 'Tacto Vaginal', field: 'AUG_TACTOVAGINAL' },
+                  { label: 'Tacto Rectal', field: 'AIG_TACTORECTAL' },
+                  { label: 'Puño Percusión', field: 'AUG_PUNIOPERCUSION' },
+                  { label: 'Puntos Uretrales', field: 'AUG_PUNTOSURETRALES' },
+                  { label: 'Texto Adicional', field: 'AUG_TEXTO' }
+                ], hci)}
                 
                 {renderHCISection('Sistema Nervioso', [
                   { label: 'Conciencia', field: 'SN_CONCIENCIA' },
-                  { label: 'Orientación', field: 'SN_ORIENTACION' },
-                  { label: 'Lenguaje', field: 'SN_LENGUAJE' },
-                  { label: 'Pares Craneales', field: 'SN_PARESCRANEALES' },
-                  { label: 'Reflejos', field: 'SN_REFLEJOS' }
-                ], detalle.historiaClinicaIngreso)}
+                  { label: 'Marcha', field: 'SN_MARCHA' },
+                  { label: 'Tono Muscular', field: 'SN_TONOMUSCULAR' },
+                  { label: 'Fuerza Muscular', field: 'SN_FUERZAMUSCULAR' },
+                  { label: 'Signos Piramidales', field: 'SN_SIGNOSPIRAMIDALES' },
+                  { label: 'Sensibilidad Superficial', field: 'SN_SENSIBILIDADSUPERFICIAL' },
+                  { label: 'Signos Meníngeos', field: 'SN_SIGNOSMENINGEOS' },
+                  { label: 'Pares Craneanos', field: 'SN _PARESCRANEANOS' },
+                  { label: 'Taxia', field: 'SN_TAXIA' },
+                  { label: 'Praxia', field: 'SN_PRAXIA' },
+                  { label: 'Glasgow', field: 'EN_GLASGOW' },
+                  { label: 'Sensibilidad', field: 'EN_SENCIVILIDAD' },
+                  { label: 'Motricidad', field: 'EN_MOTRICIDAD' },
+                  { label: 'Texto Adicional', field: 'SN_TEXTO' }
+                ], hci)}
+                
+                {renderHCISection('Examen Oftalmológico', [
+                  { label: 'Fondo de Ojo', field: 'EO_FONDODEOJO' },
+                  { label: 'Medios Birrefringentes', field: 'EO_MEDIOSBIREFRIGENTES' },
+                  { label: 'Cruces', field: 'EO_CRUCES' },
+                  { label: 'Relación', field: 'EO_RELACION' },
+                  { label: 'Hemorragia/Exudados', field: 'EO_HEMORRAGIAEXUDADOS' }
+                ], hci)}
+                
+                {renderHCISection('Electrocardiograma', [
+                  { label: 'Ritmo', field: 'EC_RITMO' },
+                  { label: 'Frecuencia', field: 'EC_FRECUENCIA' },
+                  { label: 'PR', field: 'EC_PR' },
+                  { label: 'QT', field: 'EC_QT' },
+                  { label: 'Onda P', field: 'EC_ONDAP' },
+                  { label: 'Duración', field: 'EC_DURACION' },
+                  { label: 'Amplitud', field: 'EC_AMPLITUD' },
+                  { label: 'Conformación', field: 'EC_CONFORMACION' },
+                  { label: 'QRS', field: 'EC_QRS' },
+                  { label: 'Onda T', field: 'EC_ONDAT' },
+                  { label: 'ST', field: 'EC_ST' },
+                  { label: 'Eje', field: 'EC_EJE' },
+                  { label: 'Conclusiones', field: 'EC_CONCLUSIONES' }
+                ], hci)}
+                
+                {renderHCISection('Radiografía de Tórax', [
+                  { label: 'Fecha/Hora', field: 'RDT_DATETIME' },
+                  { label: 'Técnica', field: 'RDT_TECNICA' },
+                  { label: 'Partes Blandas', field: 'RDT_PARTESBLANDAS' },
+                  { label: 'Partes Óseas', field: 'RDT_PARTESOSEAS' },
+                  { label: 'Hemidiafragmas', field: 'RDT_HEMIDIAFRAGMAS' },
+                  { label: 'ICT', field: 'RDT_ICT' },
+                  { label: 'Senos Costofrénicos', field: 'RDT_SENOSCOSTOFRENICOS' },
+                  { label: 'Mediastino', field: 'RDT_MEDIASTINO' },
+                  { label: 'Silueta Cardiovascular', field: 'RDT_SILUETACARDIOVASCULAR' },
+                  { label: 'Hilios', field: 'RDT_HILIOS' },
+                  { label: 'Campos Pulmonares', field: 'RDT_CAMPOSPULMONARES' },
+                  { label: 'Conclusiones', field: 'RDT_CONCLUSIONES' },
+                  { label: 'Posición', field: 'RDT_POSICION' },
+                  { label: 'Parénquima', field: 'RDT_PARENQUIMA' }
+                ], hci)}
+                
+                {renderHCISection('Laboratorio', [
+                  { label: 'Resultados', field: 'RDT_LABORATORIO' }
+                ], hci)}
                 
                 {renderHCISection('Impresión Diagnóstica', [
                   { label: 'Diagnóstico', field: 'IMPRESIONDIAGNOSTICA' }
-                ], detalle.historiaClinicaIngreso)}
+                ], hci)}
                 
                 {renderHCISection('Comentarios', [
                   { label: 'Comentario de Ingreso', field: 'COMENTARIODEINGRESO' }
-                ], detalle.historiaClinicaIngreso)}
+                ], hci)}
               </div>
-            )}
+            ))}
           </div>
         )}
 
@@ -315,8 +498,8 @@ export default function VisitDetailPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {detalle.medicamentos.map((m) => (
-                    <tr key={m.id}>
+                  {detalle.medicamentos.map((m, idx) => (
+                    <tr key={`med-${m.id}-${m.troquel}-${idx}`}>
                       <td>{formatDate(m.fecha)}</td>
                       <td>{m.hora}</td>
                       <td><strong>{m.nombreMedicamento}</strong></td>
@@ -346,7 +529,7 @@ export default function VisitDetailPage() {
                     {formatDate(ev.fecha)} - {ev.hora}
                   </span>
                   <span className={styles.cardProfesional}>
-                    Profesional: {ev.profesional}
+                    Profesional: {ev.profesionalNombre || `Matrícula ${ev.profesionalId}`}
                   </span>
                 </div>
                 <div className={styles.cardBody}>
@@ -378,8 +561,8 @@ export default function VisitDetailPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {detalle.practicas.map((p) => (
-                    <tr key={p.id}>
+                  {detalle.practicas.map((p, idx) => (
+                    <tr key={`prac-${p.id}-${p.practica}-${idx}`}>
                       <td>{formatDate(p.fecha)}</td>
                       <td>{p.practica}</td>
                       <td><strong>{p.nombrePractica}</strong></td>
@@ -402,8 +585,8 @@ export default function VisitDetailPage() {
             {detalle.estudios.length === 0 && (
               <p className={styles.noData}>No hay estudios registrados</p>
             )}
-            {detalle.estudios.map((est) => (
-              <div key={est.id} className={styles.estudioCard}>
+            {detalle.estudios.map((est, idx) => (
+              <div key={`est-${est.id}-${est.idProtocolo}-${idx}`} className={styles.estudioCard}>
                 <div className={styles.estudioHeader}>
                   <div className={styles.estudioInfo}>
                     <span className={styles.estudioFecha}>
@@ -450,6 +633,32 @@ export default function VisitDetailPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Adjuntos */}
+                {est.adjuntos && est.adjuntos.length > 0 && (
+                  <div className={styles.adjuntosContainer}>
+                    <h3 className={styles.adjuntosTitle}>📎 Archivos Adjuntos</h3>
+                    <div className={styles.adjuntosList}>
+                      {est.adjuntos.map((adj, adjIdx) => (
+                        <a
+                          key={`adj-${adj.id}-${adjIdx}`}
+                          href={`${process.env.NEXT_PUBLIC_API_URL}/archivos/descargar?path=${encodeURIComponent(adj.pathServidor)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.adjuntoItem}
+                        >
+                          <span className={styles.adjuntoIcon}>
+                            {adj.nombreArchivo.toLowerCase().endsWith('.pdf') ? '📄' : '📁'}
+                          </span>
+                          <span className={styles.adjuntoNombre}>
+                            {adj.nombreArchivo || 'Archivo sin nombre'}
+                          </span>
+                          <span className={styles.adjuntoAccion}>Ver →</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -469,7 +678,7 @@ export default function VisitDetailPage() {
                     {formatDate(detalle.epicrisis.fecha)} - {detalle.epicrisis.hora}
                   </span>
                   <span className={styles.cardProfesional}>
-                    Profesional: {detalle.epicrisis.profesional}
+                    Profesional: {detalle.epicrisis.profesionalNombre || `Matrícula ${detalle.epicrisis.profesionalId}`}
                   </span>
                 </div>
                 <div className={styles.cardSection}>

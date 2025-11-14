@@ -42,7 +42,9 @@ export interface Evolucion {
   id: number;
   fecha: string | null;
   hora: string;
-  profesional: number;
+  profesionalId: number;
+  profesionalNombre: string | null;
+  profesionalUsuario: string | null;
   evolucion: string;
 }
 
@@ -63,10 +65,21 @@ export interface Epicrisis {
   id: number;
   fecha: string;
   hora: string;
-  profesional: number;
+  profesionalId: number;
+  profesionalNombre: string | null;
+  profesionalUsuario: string | null;
   epicrisis: string;
   diagnostico: string;
   diagnosticoTexto: string;
+}
+
+export interface Adjunto {
+  id: number;
+  numeroVisita: number;
+  idProtocolo: number;
+  pathServidor: string;
+  nombreArchivo: string;
+  fechaSubida: string | null;
 }
 
 export interface Estudio {
@@ -81,11 +94,12 @@ export interface Estudio {
   resultadoEstudio: string;
   nroProtocolo: string;
   estadoResultado: string;
+  adjuntos: Adjunto[];
 }
 
 export interface VisitDetail {
   visita: VisitBasic;
-  historiaClinicaIngreso: HistoriaClinicaIngreso | null;
+  historiaClinicaIngreso: HistoriaClinicaIngreso[];
   medicamentos: Medicamento[];
   evoluciones: Evolucion[];
   practicas: Practica[];
