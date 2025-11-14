@@ -9,9 +9,16 @@ function clarionToDate(clarionDate) {
   }
   
   // Usar UTC para evitar problemas de timezone
+  // Clarion cuenta días desde el 28 de diciembre de 1800
+  // El día 1 en Clarion = 28 de diciembre de 1800
+  // El día 82136 en Clarion = 14 de noviembre de 2025
   const baseDate = new Date(Date.UTC(1800, 11, 28)); // 28 de diciembre de 1800
   const resultDate = new Date(baseDate);
-  resultDate.setUTCDate(baseDate.getUTCDate() + clarionDate - 1);
+  
+  // CORRECCIÓN: Sumar los días SIN restar 1
+  // La fórmula correcta es: baseDate + clarionDate días
+  // Ejemplo: clarionDate=82136 → 28/12/1800 + 82136 días = 14/11/2025
+  resultDate.setUTCDate(baseDate.getUTCDate() + clarionDate);
   
   // Retornar en formato ISO date string (YYYY-MM-DD)
   const year = resultDate.getUTCFullYear();
