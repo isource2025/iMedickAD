@@ -51,16 +51,19 @@ export default function VisitDetailPage() {
     
     if (!hasData) return null;
     
+    // Detectar si es un campo de texto largo (solo 1 campo)
+    const isFullWidthField = fields.length === 1;
+    
     return (
       <div className={styles.hciSection} key={title}>
         <h3 className={styles.hciSectionTitle}>{title}</h3>
-        <div className={styles.hciFields}>
+        <div className={isFullWidthField ? styles.hciFieldsFullWidth : styles.hciFields}>
           {fields.map(({label, field}) => {
             const value = data[field];
             if (!value || value.toString().trim() === '') return null;
             
             return (
-              <div key={field} className={styles.hciField}>
+              <div key={field} className={isFullWidthField ? styles.hciFieldFullWidth : styles.hciField}>
                 <span className={styles.hciLabel}>{label}:</span>
                 <span className={styles.hciValue}>{value}</span>
               </div>

@@ -315,7 +315,6 @@
 .hciContainer {
   display: flex;
   flex-direction: column;
-  gap: 48px;
   margin-bottom: 48px;
   padding: 0;
   background: transparent;
@@ -364,7 +363,6 @@
   border-radius: 20px;
   padding: 36px 40px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-bottom: 24px;
 }
 
 .hciSection:hover {
@@ -392,6 +390,12 @@
   gap: 32px 40px;
 }
 
+/* Contenedor para campos de texto largo (sin grid) */
+.hciFieldsFullWidth {
+  display: block;
+  width: 100%;
+}
+
 .hciField {
   display: flex;
   flex-direction: column;
@@ -400,6 +404,18 @@
   background: transparent;
   border-radius: 0;
   border: none;
+}
+
+/* Campo de texto largo (ocupa todo el ancho) */
+.hciFieldFullWidth {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  width: 100%;
 }
 
 .hciLabel {
@@ -506,6 +522,11 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px 32px;
   }
+
+  .hciFieldsFullWidth {
+    display: block;
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
@@ -532,6 +553,11 @@
   .hciFields {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  .hciFieldsFullWidth {
+    display: block;
+    width: 100%;
   }
 
   .hciSection {
