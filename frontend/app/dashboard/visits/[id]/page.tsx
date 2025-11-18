@@ -222,17 +222,38 @@ export default function VisitDetailPage() {
             {detalle.historiaClinicaIngreso.length === 0 && (
               <p className={styles.noData}>No hay historia clínica de ingreso registrada</p>
             )}
-            {detalle.historiaClinicaIngreso.map((hci, index) => (
-              <div key={index} className={styles.hciContainer}>
-                <div className={styles.hciHeader}>
-                  <h3 className={styles.hciTitle}>
-                    {detalle.historiaClinicaIngreso.length > 1 ? `Historia Clínica #${index + 1}` : 'Historia Clínica de Ingreso'}
-                  </h3>
-                  <div className={styles.hciMeta}>
-                    {hci.Fecha && <span className={styles.hciDate}>Fecha: {new Date(hci.Fecha).toLocaleString('es-AR')}</span>}
-                    {hci.IdProfecional && <span className={styles.hciProfesional}>Profesional: {hci.IdProfecional}</span>}
+            {detalle.historiaClinicaIngreso.map((hci, index) => {
+              // Debug: verificar datos de HCI
+              if (index === 0) {
+                console.log('🔍 Datos HCI recibidos:', {
+                  MatriculaProfesional: hci.MatriculaProfesional,
+                  NombreProfesional: hci.NombreProfesional,
+                  DescripcionSector: hci.DescripcionSector,
+                  IdProfecional: hci.IdProfecional,
+                  IdSector: hci.IdSector
+                });
+              }
+              
+              return (
+                <div key={index} className={styles.hciContainer}>
+                  <div className={styles.hciHeader}>
+                    <h3 className={styles.hciTitle}>
+                      {detalle.historiaClinicaIngreso.length > 1 ? `Historia Clínica #${index + 1}` : 'Historia Clínica de Ingreso'}
+                    </h3>
+                    <div className={styles.hciMeta}>
+                      {hci.Fecha && <span className={styles.hciDate}>Fecha: {new Date(hci.Fecha).toLocaleString('es-AR')}</span>}
+                      {(hci.MatriculaProfesional || hci.NombreProfesional) && (
+                        <span className={styles.hciProfesional}>
+                          Médico: {hci.MatriculaProfesional && `Mat. ${hci.MatriculaProfesional}`}
+                          {hci.MatriculaProfesional && hci.NombreProfesional && ' - '}
+                          {hci.NombreProfesional}
+                        </span>
+                      )}
+                      {hci.DescripcionSector && (
+                        <span className={styles.hciServicio}>Servicio: {hci.DescripcionSector}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
                 
                 {renderHCISection('Motivo de Consulta', [
                   { label: 'Motivo', field: 'MotivoConsulta' }
@@ -476,7 +497,8 @@ export default function VisitDetailPage() {
                   { label: 'Comentario de Ingreso', field: 'COMENTARIODEINGRESO' }
                 ], hci)}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

@@ -348,7 +348,8 @@
 }
 
 .hciDate,
-.hciProfesional {
+.hciProfesional,
+.hciServicio {
   display: flex;
   align-items: center;
   gap: 8px;
