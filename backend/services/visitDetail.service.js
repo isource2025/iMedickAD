@@ -125,13 +125,22 @@ class VisitDetailService {
     const result = await pool.request()
       .input('numeroVisita', sql.Int, numeroVisita)
       .query(`
-        SELECT *
-        FROM imHCI
-        WHERE NumeroVisita = @numeroVisita
-        ORDER BY Fecha DESC
+        SELECT 
+          hci.*,
+          p.Matricula as MatriculaProfesional,
+          p.ApellidoNombre as NombreProfesional,
+          RTRIM(LTRIM(hci.IdSector)) as DescripcionSector
+        FROM imHCI hci
+        LEFT JOIN imPersonal p ON CAST(hci.IdProfecional AS INT) = CAST(p.Matricula AS INT)
+        WHERE hci.NumeroVisita = @numeroVisita
+        ORDER BY hci.Fecha DESC
       `);
     
     console.log('   ✅ HCI encontradas:', result.recordset.length);
+    if (result.recordset.length > 0) {
+      console.log('   📋 Primera HCI - Profesional:', result.recordset[0].IdProfecional, '-', result.recordset[0].MatriculaProfesional, '-', result.recordset[0].NombreProfesional);
+      console.log('   📋 Primera HCI - Sector:', result.recordset[0].IdSector, '->', result.recordset[0].DescripcionSector);
+    }
     
     // Retornar todas las HCI como array
     return result.recordset;
