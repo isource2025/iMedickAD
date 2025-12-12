@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import visitDetailService from '@/services/visitDetailService';
 import { VisitDetail } from '@/types/visitDetail';
@@ -15,6 +15,7 @@ export default function VisitDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('hci');
+  const [protocoloSeleccionado, setProtocoloSeleccionado] = useState<any>(null);
 
   useEffect(() => {
     const cargarDetalle = async () => {
@@ -198,6 +199,12 @@ export default function VisitDetailPage() {
           onClick={() => setActiveTab('practicas')}
         >
           Prácticas ({detalle.practicas.length})
+        </button>
+        <button
+          className={activeTab === 'protocolos' ? styles.tabActive : styles.tab}
+          onClick={() => setActiveTab('protocolos')}
+        >
+          Protocolos ({detalle.protocolos.length})
         </button>
         <button
           className={activeTab === 'estudios' ? styles.tabActive : styles.tab}
@@ -603,6 +610,69 @@ export default function VisitDetailPage() {
           </div>
         )}
 
+        {/* Protocolos */}
+        {activeTab === 'protocolos' && (
+          <div className={styles.section}>
+            <h2>Protocolos Médicos</h2>
+            {detalle.protocolos.length === 0 && (
+              <p className={styles.noData}>No hay protocolos registrados</p>
+            )}
+            {detalle.protocolos.length > 0 && (
+              <div className={styles.tableContainer}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>Tipo</th>
+                      <th>Nro Protocolo</th>
+                      <th>Fecha</th>
+                      <th>Profesional</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {detalle.protocolos.map((protocolo, idx) => {
+                      // Obtener profesionales únicos de las prácticas
+                      const profesionalesPracticas = protocolo.practicas 
+                        ? Array.from(new Set(protocolo.practicas
+                            .filter(p => p.nombreProfesional)
+                            .map(p => p.nombreProfesional)))
+                        : [];
+                      
+                      // Usar profesional del protocolo o el primero de las prácticas
+                      const profesionalPrincipal = protocolo.nombreProfesionalProtocolo || 
+                                                   (profesionalesPracticas.length > 0 ? profesionalesPracticas[0] : null);
+                      
+                      return (
+                        <tr key={`protocolo-${protocolo.idProtocolo}-${idx}`}>
+                          <td>{protocolo.tipoProtocolo || 'N/A'}</td>
+                          <td><strong>{protocolo.nroProtocolo}</strong></td>
+                          <td>{formatDate(protocolo.fechaProtocolo)}</td>
+                          <td>
+                            {profesionalPrincipal || 'Sin asignar'}
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => setProtocoloSeleccionado(protocolo)}
+                              className={styles.backButton}
+                              style={{
+                                padding: '8px 16px',
+                                fontSize: '12px',
+                                whiteSpace: 'nowrap'
+                              }}
+                            >
+                              Ver más →
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Estudios */}
         {activeTab === 'estudios' && (
           <div className={styles.section}>
@@ -731,6 +801,308 @@ export default function VisitDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Modal de Protocolo */}
+      {protocoloSeleccionado && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '20px',
+            backdropFilter: 'blur(10px)'
+          }}
+          onClick={() => setProtocoloSeleccionado(null)}
+        >
+          <div 
+            style={{
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '20px',
+              maxWidth: '1200px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflow: 'hidden',
+              position: 'relative',
+              boxShadow: '0 12px 40px rgba(0, 0, 0, 0.08)',
+              border: '1px solid rgba(0, 0, 0, 0.06)',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header del Modal */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.01) 100%)',
+              backdropFilter: 'blur(10px)',
+              padding: '32px 40px',
+              borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+              position: 'relative'
+            }}>
+              <button
+                onClick={() => setProtocoloSeleccionado(null)}
+                className={styles.backButton}
+                style={{
+                  position: 'absolute',
+                  top: '32px',
+                  right: '40px',
+                  padding: '8px 20px',
+                  fontSize: '13px'
+                }}
+              >
+                Cerrar
+              </button>
+
+              <h2 style={{ 
+                margin: 0, 
+                fontSize: '28px', 
+                fontWeight: '300',
+                letterSpacing: '-0.5px',
+                color: '#1a1a1a'
+              }}>
+                Protocolo N° {protocoloSeleccionado.nroProtocolo}
+              </h2>
+              <p style={{ 
+                margin: '12px 0 0 0', 
+                opacity: 0.6, 
+                fontSize: '13px',
+                fontWeight: '400',
+                letterSpacing: '0.3px'
+              }}>
+                {protocoloSeleccionado.tipoProtocolo || 'Protocolo Médico'} • {formatDate(protocoloSeleccionado.fechaProtocolo)}
+              </p>
+            </div>
+
+            {/* Contenido del Modal con Scroll */}
+            <div style={{
+              flex: 1,
+              overflow: 'auto',
+              padding: '40px'
+            }}>
+
+              {/* Información del Protocolo */}
+              <div style={{ marginBottom: '32px' }}>
+                <h3 style={{ 
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  color: '#1a1a1a',
+                  margin: '0 0 24px 0',
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase',
+                  opacity: 0.5
+                }}>
+                  Información del Protocolo
+                </h3>
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <div className={styles.label}>Nro Protocolo</div>
+                    <div className={styles.value} style={{ fontWeight: '600', color: '#1a1a1a' }}>{protocoloSeleccionado.nroProtocolo}</div>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <div className={styles.label}>Tipo</div>
+                    <div className={styles.value}>{protocoloSeleccionado.tipoProtocolo || 'N/A'}</div>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <div className={styles.label}>Fecha</div>
+                    <div className={styles.value}>{formatDate(protocoloSeleccionado.fechaProtocolo)}</div>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <div className={styles.label}>Estado</div>
+                    <div className={styles.value}>{protocoloSeleccionado.estado || 'N/A'}</div>
+                  </div>
+                  {protocoloSeleccionado.fechaHoraInicio && (
+                    <div className={styles.infoItem}>
+                      <div className={styles.label}>Inicio</div>
+                      <div className={styles.value}>{new Date(protocoloSeleccionado.fechaHoraInicio).toLocaleString('es-AR')}</div>
+                    </div>
+                  )}
+                  {protocoloSeleccionado.fechaHoraFin && (
+                    <div className={styles.infoItem}>
+                      <div className={styles.label}>Fin</div>
+                      <div className={styles.value}>{new Date(protocoloSeleccionado.fechaHoraFin).toLocaleString('es-AR')}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Diagnósticos */}
+              {(protocoloSeleccionado.diagnosticoPreProcedimiento || protocoloSeleccionado.diagnosticoPosProcedimiento) && (
+                <div style={{ marginBottom: '32px' }}>
+                  <h3 style={{ 
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: '#1a1a1a',
+                    margin: '0 0 24px 0',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                    opacity: 0.5
+                  }}>
+                    Diagnósticos
+                  </h3>
+                  <div className={styles.card} style={{ marginBottom: 0 }}>
+                    {protocoloSeleccionado.diagnosticoPreProcedimiento && (
+                      <div style={{ marginBottom: protocoloSeleccionado.diagnosticoPosProcedimiento ? '20px' : '0' }}>
+                        <div className={styles.label}>Pre-Procedimiento</div>
+                        <div className={styles.value}>{protocoloSeleccionado.diagnosticoPreProcedimiento}</div>
+                      </div>
+                    )}
+                    {protocoloSeleccionado.diagnosticoPosProcedimiento && (
+                      <div>
+                        <div className={styles.label}>Post-Procedimiento</div>
+                        <div className={styles.value}>{protocoloSeleccionado.diagnosticoPosProcedimiento}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Técnica */}
+              {protocoloSeleccionado.tecnica && (
+                <div style={{ marginBottom: '32px' }}>
+                  <h3 style={{ 
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: '#1a1a1a',
+                    margin: '0 0 24px 0',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                    opacity: 0.5
+                  }}>
+                    Técnica
+                  </h3>
+                  <div className={styles.card} style={{ marginBottom: 0 }}>
+                    <p className={styles.textContent}>{protocoloSeleccionado.tecnica}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Procedimientos/Prácticas */}
+              {protocoloSeleccionado.practicas && protocoloSeleccionado.practicas.length > 0 && (
+                <div style={{ marginBottom: '32px' }}>
+                  <h3 style={{ 
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: '#1a1a1a',
+                    margin: '0 0 24px 0',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                    opacity: 0.5
+                  }}>
+                    Procedimientos Realizados
+                  </h3>
+                  <div className={styles.tableContainer}>
+                    <table className={styles.table}>
+                      <thead>
+                        <tr>
+                          <th>Fecha</th>
+                          <th>Código</th>
+                          <th>Práctica</th>
+                          <th>Profesional</th>
+                          <th>Cantidad</th>
+                          <th>Hora Inicio</th>
+                          <th>Hora Fin</th>
+                          <th>Observaciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {protocoloSeleccionado.practicas.map((practica: any, pracIdx: number) => (
+                          <tr key={`practica-${practica.id}-${pracIdx}`}>
+                            <td>{formatDate(practica.fecha)}</td>
+                            <td>{practica.codigoPractica}</td>
+                            <td><strong>{practica.nombrePractica}</strong></td>
+                            <td>{practica.nombreProfesional || 'N/A'}</td>
+                            <td>{practica.cantidad}</td>
+                            <td>{practica.horaInicio !== '00:00:00' ? practica.horaInicio : '-'}</td>
+                            <td>{practica.horaFin !== '00:00:00' ? practica.horaFin : '-'}</td>
+                            <td>{practica.observaciones}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Profesionales que Intervienen */}
+              {(() => {
+                const todosProfesionales = new Set<string>();
+                if (protocoloSeleccionado.nombreProfesionalProtocolo) {
+                  todosProfesionales.add(protocoloSeleccionado.nombreProfesionalProtocolo);
+                }
+                if (protocoloSeleccionado.practicas) {
+                  protocoloSeleccionado.practicas
+                    .filter((p: any) => p.nombreProfesional)
+                    .forEach((p: any) => todosProfesionales.add(p.nombreProfesional));
+                }
+                const profesionalesUnicos = Array.from(todosProfesionales);
+                
+                return profesionalesUnicos.length > 0 && (
+                  <div style={{ marginBottom: '32px' }}>
+                    <h3 style={{ 
+                      fontSize: '16px',
+                      fontWeight: '500',
+                      color: '#1a1a1a',
+                      margin: '0 0 24px 0',
+                      letterSpacing: '0.5px',
+                      textTransform: 'uppercase',
+                      opacity: 0.5
+                    }}>
+                      Profesionales que Intervienen
+                    </h3>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                      {profesionalesUnicos.map((nombreProf, profIdx) => {
+                        const practica = protocoloSeleccionado.practicas?.find((p: any) => p.nombreProfesional === nombreProf);
+                        const matricula = practica?.matriculaProfesional || protocoloSeleccionado.matriculaProfesionalProtocolo;
+                        return (
+                          <div key={profIdx} className={styles.card} style={{
+                            marginBottom: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '16px 24px'
+                          }}>
+                            <div>
+                              <div style={{ fontWeight: '500', fontSize: '15px', color: '#1a1a1a' }}>{nombreProf}</div>
+                              {matricula && <div className={styles.label} style={{ marginTop: '4px' }}>Mat. {matricula}</div>}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Descripción de la Intervención - AL FINAL */}
+              {protocoloSeleccionado.texto && (
+                <div>
+                  <h3 style={{ 
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    color: '#1a1a1a',
+                    margin: '0 0 24px 0',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                    opacity: 0.5
+                  }}>
+                    Descripción de la Intervención
+                  </h3>
+                  <div className={styles.card} style={{ marginBottom: 0 }}>
+                    <p className={styles.textContent}>{protocoloSeleccionado.texto}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

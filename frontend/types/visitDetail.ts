@@ -97,6 +97,42 @@ export interface Estudio {
   adjuntos: Adjunto[];
 }
 
+export interface PracticaProtocolo {
+  id: number;
+  codigoPractica: number;
+  nombrePractica: string;
+  tipoPractica: string;
+  tipoNomenclador: string;
+  cantidad: number;
+  fecha: string | null;
+  horaInicio: string;
+  horaFin: string;
+  observaciones: string;
+  codOperador: number | null;
+  nombreProfesional: string | null;
+  matriculaProfesional: number | null;
+}
+
+export interface Protocolo {
+  idProtocolo: number;
+  nroProtocolo: string;
+  numeroVisita: number;
+  idPaciente: number;
+  fechaProtocolo: string | null;
+  tipoProtocolo: string;
+  fechaHoraInicio: string | null;
+  fechaHoraFin: string | null;
+  diagnosticoPreProcedimiento: string;
+  tecnica: string;
+  diagnosticoPosProcedimiento: string;
+  texto: string;
+  estado: string;
+  idOperador: number | null;
+  nombreProfesionalProtocolo: string | null;
+  matriculaProfesionalProtocolo: number | null;
+  practicas: PracticaProtocolo[];
+}
+
 export interface VisitDetail {
   visita: VisitBasic;
   historiaClinicaIngreso: HistoriaClinicaIngreso[];
@@ -105,4 +141,5 @@ export interface VisitDetail {
   practicas: Practica[];
   epicrisis: Epicrisis | null;
   estudios: Estudio[];
+  protocolos: Protocolo[];
 }

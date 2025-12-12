@@ -1,0 +1,90 @@
+RESUMEN DE ESTRUCTURAS DE TABLAS
+Fecha: 27/11/2025, 14:00:28
+================================================================================
+
+TABLA: imInterCtrlMedicamento
+--------------------------------------------------------------------------------
+Total de registros: 1761451
+Claves primarias: IDCtrlMedica
+
+COLUMNAS:
+  - IDCtrlMedica (int) -> number [PK]
+  - IDFactura (int) -> number [NULLABLE]
+  - IDDetalle (int) -> number [NULLABLE]
+  - NroIndicacion (int) -> number [NULLABLE]
+  - ModuloOrigen (char) -> string [NULLABLE]
+  - TipoMedicamento (char) -> string [NULLABLE]
+  - NumeroVisita (int) -> number [NULLABLE]
+  - Sector (char) -> string [NULLABLE]
+  - FechaCarga (int) -> number [NULLABLE]
+  - HoraCarga (int) -> number [NULLABLE]
+  - OperadorCarga (int) -> number [NULLABLE]
+  - Profesional (int) -> number [NULLABLE]
+  - FechaControl (int) -> number [NULLABLE]
+  - HoraControl (int) -> number [NULLABLE]
+  - Troquel (int) -> number [NULLABLE]
+  - Cantidad (real) -> number [NULLABLE]
+  - TipoUnidad (char) -> string [NULLABLE]
+  - Observaciones (varchar) -> string [NULLABLE]
+  - IDCliente (int) -> number [NULLABLE]
+  - Status (int) -> number [NULLABLE]
+  - CantidadIndicada (decimal) -> number [NULLABLE]
+  - IdTurno (int) -> number [NULLABLE]
+
+
+TABLA: imInterCtrlFrecuente
+--------------------------------------------------------------------------------
+Total de registros: 760207
+Claves primarias: Valor
+
+COLUMNAS:
+  - Valor (int) -> number [PK]
+  - NumeroVisita (int) -> number [NULLABLE]
+  - FechaCarga (int) -> number [NULLABLE]
+  - HoraCarga (int) -> number [NULLABLE]
+  - OperadorCarga (int) -> number [NULLABLE]
+  - Profesional (int) -> number [NULLABLE]
+  - FechaControl (int) -> number [NULLABLE]
+  - HoraControl (int) -> number [NULLABLE]
+  - Pulso (tinyint) -> number [NULLABLE]
+  - Maximo (int) -> number [NULLABLE]
+  - Minimo (int) -> number [NULLABLE]
+  - FrecuenciaRespiratoria (int) -> number [NULLABLE]
+  - Axilar (real) -> number [NULLABLE]
+  - Rectal (real) -> number [NULLABLE]
+  - Observaciones (varchar) -> string [NULLABLE]
+  - Nroindicacion (int) -> number [NULLABLE]
+  - Hgt (varchar) -> string [NULLABLE]
+  - IdSector (varchar) -> string [NULLABLE]
+  - PAMedia (int) -> number [NULLABLE]
+  - Saturometria (int) -> number [NULLABLE]
+  - Peso (decimal) -> number [NULLABLE]
+  - Talla (decimal) -> number [NULLABLE]
+  - IdTurno (int) -> number [NULLABLE]
+
+
+TABLA: imInterCtrlEvolucion
+--------------------------------------------------------------------------------
+Total de registros: 544224
+Claves primarias: NumeroVisita, FechaControl, HoraControl
+
+COLUMNAS:
+  - NumeroVisita (int) -> number [PK]
+  - Profesional (int) -> number [NULLABLE]
+  - FechaControl (int) -> number [PK]
+  - HoraControl (int) -> number [PK]
+  - Observaciones (varchar) -> string [NULLABLE]
+  - FechaHoraCarga (datetime) -> Date [NULLABLE]
+  - OperadorCarga (int) -> number [NULLABLE]
+
+
+TABLA: imInterTipoControles
+--------------------------------------------------------------------------------
+Total de registros: 17
+Claves primarias: Valor
+
+COLUMNAS:
+  - Valor (int) -> number [PK]
+  - Descripcion (varchar) -> string [NULLABLE]
+
+

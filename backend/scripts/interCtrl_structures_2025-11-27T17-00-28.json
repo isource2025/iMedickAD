@@ -1,0 +1,770 @@
+{
+  "imInterCtrlMedicamento": {
+    "tableName": "imInterCtrlMedicamento",
+    "recordCount": 1761451,
+    "columns": [
+      {
+        "name": "IDCtrlMedica",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": false,
+        "defaultValue": null,
+        "position": 1
+      },
+      {
+        "name": "IDFactura",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 2
+      },
+      {
+        "name": "IDDetalle",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 3
+      },
+      {
+        "name": "NroIndicacion",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 4
+      },
+      {
+        "name": "ModuloOrigen",
+        "sqlType": "char",
+        "jsType": "string",
+        "maxLength": 2,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 5
+      },
+      {
+        "name": "TipoMedicamento",
+        "sqlType": "char",
+        "jsType": "string",
+        "maxLength": 4,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 6
+      },
+      {
+        "name": "NumeroVisita",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 7
+      },
+      {
+        "name": "Sector",
+        "sqlType": "char",
+        "jsType": "string",
+        "maxLength": 4,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 8
+      },
+      {
+        "name": "FechaCarga",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 9
+      },
+      {
+        "name": "HoraCarga",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 10
+      },
+      {
+        "name": "OperadorCarga",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 11
+      },
+      {
+        "name": "Profesional",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 12
+      },
+      {
+        "name": "FechaControl",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 13
+      },
+      {
+        "name": "HoraControl",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 14
+      },
+      {
+        "name": "Troquel",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 15
+      },
+      {
+        "name": "Cantidad",
+        "sqlType": "real",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 24,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 16
+      },
+      {
+        "name": "TipoUnidad",
+        "sqlType": "char",
+        "jsType": "string",
+        "maxLength": 5,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 17
+      },
+      {
+        "name": "Observaciones",
+        "sqlType": "varchar",
+        "jsType": "string",
+        "maxLength": 255,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 18
+      },
+      {
+        "name": "IDCliente",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 19
+      },
+      {
+        "name": "Status",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 20
+      },
+      {
+        "name": "CantidadIndicada",
+        "sqlType": "decimal",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 18,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 21
+      },
+      {
+        "name": "IdTurno",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 22
+      }
+    ],
+    "primaryKeys": [
+      "IDCtrlMedica"
+    ],
+    "foreignKeys": [],
+    "sampleData": [
+      {
+        "IDCtrlMedica": 5497,
+        "IDFactura": 0,
+        "IDDetalle": 0,
+        "NroIndicacion": 44,
+        "ModuloOrigen": "IN",
+        "TipoMedicamento": "MED ",
+        "NumeroVisita": 4379,
+        "Sector": "UTI ",
+        "FechaCarga": 76892,
+        "HoraCarga": 7841894,
+        "OperadorCarga": 6,
+        "Profesional": 0,
+        "FechaControl": 76892,
+        "HoraControl": 5412001,
+        "Troquel": 9906871,
+        "Cantidad": 1,
+        "TipoUnidad": "fco  ",
+        "Observaciones": "",
+        "IDCliente": 0,
+        "Status": 0,
+        "CantidadIndicada": 1,
+        "IdTurno": null
+      },
+      {
+        "IDCtrlMedica": 5499,
+        "IDFactura": 0,
+        "IDDetalle": 0,
+        "NroIndicacion": 37,
+        "ModuloOrigen": "IN",
+        "TipoMedicamento": "MED ",
+        "NumeroVisita": 4311,
+        "Sector": "UTI ",
+        "FechaCarga": 76892,
+        "HoraCarga": 7868238,
+        "OperadorCarga": 6,
+        "Profesional": 60083,
+        "FechaControl": 76892,
+        "HoraControl": 5760001,
+        "Troquel": 9907384,
+        "Cantidad": 1,
+        "TipoUnidad": "fco  ",
+        "Observaciones": "",
+        "IDCliente": 0,
+        "Status": 0,
+        "CantidadIndicada": 1,
+        "IdTurno": null
+      }
+    ]
+  },
+  "imInterCtrlFrecuente": {
+    "tableName": "imInterCtrlFrecuente",
+    "recordCount": 760207,
+    "columns": [
+      {
+        "name": "Valor",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": false,
+        "defaultValue": null,
+        "position": 1
+      },
+      {
+        "name": "NumeroVisita",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 2
+      },
+      {
+        "name": "FechaCarga",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 3
+      },
+      {
+        "name": "HoraCarga",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 4
+      },
+      {
+        "name": "OperadorCarga",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 5
+      },
+      {
+        "name": "Profesional",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 6
+      },
+      {
+        "name": "FechaControl",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 7
+      },
+      {
+        "name": "HoraControl",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 8
+      },
+      {
+        "name": "Pulso",
+        "sqlType": "tinyint",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 3,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 9
+      },
+      {
+        "name": "Maximo",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 10
+      },
+      {
+        "name": "Minimo",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 11
+      },
+      {
+        "name": "FrecuenciaRespiratoria",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 12
+      },
+      {
+        "name": "Axilar",
+        "sqlType": "real",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 24,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 13
+      },
+      {
+        "name": "Rectal",
+        "sqlType": "real",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 24,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 14
+      },
+      {
+        "name": "Observaciones",
+        "sqlType": "varchar",
+        "jsType": "string",
+        "maxLength": 255,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 15
+      },
+      {
+        "name": "Nroindicacion",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 16
+      },
+      {
+        "name": "Hgt",
+        "sqlType": "varchar",
+        "jsType": "string",
+        "maxLength": 50,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 17
+      },
+      {
+        "name": "IdSector",
+        "sqlType": "varchar",
+        "jsType": "string",
+        "maxLength": 4,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 18
+      },
+      {
+        "name": "PAMedia",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 19
+      },
+      {
+        "name": "Saturometria",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 20
+      },
+      {
+        "name": "Peso",
+        "sqlType": "decimal",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 18,
+        "numericScale": 2,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 21
+      },
+      {
+        "name": "Talla",
+        "sqlType": "decimal",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 18,
+        "numericScale": 2,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 22
+      },
+      {
+        "name": "IdTurno",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 23
+      }
+    ],
+    "primaryKeys": [
+      "Valor"
+    ],
+    "foreignKeys": [],
+    "sampleData": [
+      {
+        "Valor": 19486,
+        "NumeroVisita": 32501,
+        "FechaCarga": 80263,
+        "HoraCarga": 4374311,
+        "OperadorCarga": 146,
+        "Profesional": 7092,
+        "FechaControl": 80263,
+        "HoraControl": 4373301,
+        "Pulso": 0,
+        "Maximo": 0,
+        "Minimo": 0,
+        "FrecuenciaRespiratoria": 0,
+        "Axilar": 0,
+        "Rectal": 0,
+        "Observaciones": "",
+        "Nroindicacion": 3326,
+        "Hgt": null,
+        "IdSector": null,
+        "PAMedia": null,
+        "Saturometria": null,
+        "Peso": null,
+        "Talla": null,
+        "IdTurno": null
+      },
+      {
+        "Valor": 19488,
+        "NumeroVisita": 39528,
+        "FechaCarga": 80376,
+        "HoraCarga": 3278340,
+        "OperadorCarga": 260,
+        "Profesional": 1,
+        "FechaControl": 80376,
+        "HoraControl": 2520001,
+        "Pulso": 81,
+        "Maximo": 100,
+        "Minimo": 70,
+        "FrecuenciaRespiratoria": 18,
+        "Axilar": 36.400001525878906,
+        "Rectal": 0,
+        "Observaciones": "saturacion: 99%",
+        "Nroindicacion": 0,
+        "Hgt": null,
+        "IdSector": null,
+        "PAMedia": null,
+        "Saturometria": null,
+        "Peso": null,
+        "Talla": null,
+        "IdTurno": null
+      }
+    ]
+  },
+  "imInterCtrlEvolucion": {
+    "tableName": "imInterCtrlEvolucion",
+    "recordCount": 544224,
+    "columns": [
+      {
+        "name": "NumeroVisita",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": false,
+        "defaultValue": null,
+        "position": 1
+      },
+      {
+        "name": "Profesional",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 2
+      },
+      {
+        "name": "FechaControl",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": false,
+        "defaultValue": null,
+        "position": 3
+      },
+      {
+        "name": "HoraControl",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": false,
+        "defaultValue": null,
+        "position": 4
+      },
+      {
+        "name": "Observaciones",
+        "sqlType": "varchar",
+        "jsType": "string",
+        "maxLength": 4000,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 5
+      },
+      {
+        "name": "FechaHoraCarga",
+        "sqlType": "datetime",
+        "jsType": "Date",
+        "maxLength": null,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 6
+      },
+      {
+        "name": "OperadorCarga",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 7
+      }
+    ],
+    "primaryKeys": [
+      "NumeroVisita",
+      "FechaControl",
+      "HoraControl"
+    ],
+    "foreignKeys": [],
+    "sampleData": [
+      {
+        "NumeroVisita": 10577,
+        "Profesional": 2206,
+        "FechaControl": 80970,
+        "HoraControl": 6480001,
+        "Observaciones": "Paciente de sexo femenino, Lucida, Incoherente, no ubicada en tiempo y espacio. Agresiva.\r\nVentilada por aire ambiental.\r\nVVP en MSD, por donde difunde medicacion. PHP S/F a 7 gxp`.\r\nControl de signos vitales, presenta hipertermia, se le realiza medicacion segun OMG.\r\nDiuresis negativa (-), Catarsis Negativa (-).\r\nLa paciente pasa a Clinica Sala 1 Cama 5.",
+        "FechaHoraCarga": "2022-09-05T18:14:28.700Z",
+        "OperadorCarga": 603
+      },
+      {
+        "NumeroVisita": 10577,
+        "Profesional": 2054,
+        "FechaControl": 80970,
+        "HoraControl": 6840001,
+        "Observaciones": ".PACIENTE DE 76 AÑOS DE EDAD  QUE INGRESA DESDE EMERGENCIA LO HACE EN CAMILLA ACOMPAÑADO DE ENFERMERO DEL SECTOR . COMO LA PACIENTE NO SE ENCUENTRA LUCIDA SE REALIZA LA ANAMNESIS AL FAMILIAR MANIFESTANDO ESTE QUE PRESENTABA SINTOMAS DE NEUMONIA Y ESTADO FEBRIL CON ASTENIA ADINAMIA Y MIALGIAS. REFIERENEN INTERNACIONES ANTERIORES HACE 5 AÑOS POR NEUMONIA.",
+        "FechaHoraCarga": "2022-09-05T19:49:02.920Z",
+        "OperadorCarga": 386
+      }
+    ]
+  },
+  "imInterTipoControles": {
+    "tableName": "imInterTipoControles",
+    "recordCount": 17,
+    "columns": [
+      {
+        "name": "Valor",
+        "sqlType": "int",
+        "jsType": "number",
+        "maxLength": null,
+        "numericPrecision": 10,
+        "numericScale": 0,
+        "isNullable": false,
+        "defaultValue": null,
+        "position": 1
+      },
+      {
+        "name": "Descripcion",
+        "sqlType": "varchar",
+        "jsType": "string",
+        "maxLength": 60,
+        "numericPrecision": null,
+        "numericScale": null,
+        "isNullable": true,
+        "defaultValue": null,
+        "position": 2
+      }
+    ],
+    "primaryKeys": [
+      "Valor"
+    ],
+    "foreignKeys": [],
+    "sampleData": [
+      {
+        "Valor": 14,
+        "Descripcion": "ASPIRACION S.N.G."
+      },
+      {
+        "Valor": 13,
+        "Descripcion": "ASPIRACION SECRECION RESP."
+      }
+    ]
+  }
+}

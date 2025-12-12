@@ -14,14 +14,15 @@ class VisitDetailService {
       console.log('═══════════════════════════════════════════════════════');
       
       // Obtener datos relacionados en paralelo
-      const [visita, hci, medicamentos, evoluciones, practicas, epicrisis, estudios] = await Promise.all([
+      const [visita, hci, medicamentos, evoluciones, practicas, epicrisis, estudios, protocolos] = await Promise.all([
         this.obtenerVisitaBasica(pool, numeroVisita),
         this.obtenerHCI(pool, numeroVisita),
         this.obtenerMedicamentos(pool, numeroVisita),
         this.obtenerEvoluciones(pool, numeroVisita),
         this.obtenerPracticas(pool, numeroVisita),
         this.obtenerEpicrisis(pool, numeroVisita),
-        this.obtenerEstudios(pool, numeroVisita)
+        this.obtenerEstudios(pool, numeroVisita),
+        this.obtenerProtocolos(pool, numeroVisita)
       ]);
       
       if (!visita) {
@@ -40,6 +41,7 @@ class VisitDetailService {
       console.log('🏥 Prácticas:', practicas.length);
       console.log('🔬 Estudios:', estudios.length);
       console.log('📋 Epicrisis:', epicrisis ? '✅ SÍ' : '❌ NO');
+      console.log('📑 Protocolos:', protocolos.length);
       console.log('═══════════════════════════════════════════════════════');
       
       return {
@@ -49,7 +51,8 @@ class VisitDetailService {
         evoluciones,
         practicas,
         epicrisis,
-        estudios
+        estudios,
+        protocolos
       };
     } catch (error) {
       console.error('Error al obtener detalle de visita:', error);
@@ -407,6 +410,125 @@ class VisitDetailService {
       return estudios;
     } catch (error) {
       console.error('Error al obtener estudios:', error);
+      return []; // Retornar array vacío si hay error
+    }
+  }
+
+  /**
+   * Obtener protocolos con sus prácticas asociadas
+   */
+  async obtenerProtocolos(pool, numeroVisita) {
+    console.log('🔍 [8/8] Buscando protocolos...');
+    try {
+      // Obtener protocolos de la visita con toda la información
+      const protocolosResult = await pool.request()
+        .input('numeroVisita', sql.Int, numeroVisita)
+        .query(`
+          SELECT 
+            p.IdProtocolo,
+            p.NumeroProtocolo as NroProtocolo,
+            p.NumeroVisita,
+            p.IDPaciente as IdPaciente,
+            p.Fecha as FechaProtocolo,
+            p.TipoProtocolo,
+            p.FechaHoraInicio,
+            p.FechaHoraFin,
+            p.DiagnosticoPreProcedimiento,
+            p.Tecnica,
+            p.DiagnosticoPosProcedimiento,
+            p.Texto,
+            p.Estado,
+            p.IdOperador,
+            pers.ApellidoNombre as NombreProfesionalProtocolo,
+            pers.Matricula as MatriculaProfesionalProtocolo
+          FROM HCProtocolosPtes p
+          LEFT JOIN imPersonal pers ON p.IdOperador = pers.Valor
+          WHERE p.NumeroVisita = @numeroVisita
+          ORDER BY p.Fecha DESC
+        `);
+      
+      console.log(`   → Protocolos encontrados: ${protocolosResult.recordset.length}`);
+      
+      if (protocolosResult.recordset.length === 0) {
+        return [];
+      }
+      
+      // Obtener todas las prácticas de los protocolos en una sola consulta
+      const idsProtocolos = protocolosResult.recordset.map(p => p.IdProtocolo);
+      
+      const practicasResult = await pool.request()
+        .query(`
+          SELECT 
+            pr.Valor as IdPractica,
+            pr.IdProtocolo,
+            pr.Practica as CodigoPractica,
+            pr.TipoPractica,
+            pr.CantidadPractica,
+            pr.FechaPractica,
+            pr.HoraPracticaInicio,
+            pr.HoraPracticaFin,
+            pr.Observaciones,
+            pr.CodOperador,
+            n.Descripcion as NombrePractica,
+            n.Tipo as TipoNomenclador,
+            pers.ApellidoNombre as NombreProfesional,
+            pers.Matricula as MatriculaProfesional
+          FROM imFACPracticas pr
+          LEFT JOIN VUnionModuladasNomenclador n ON pr.Practica = n.IDPractica
+          LEFT JOIN imPersonal pers ON pr.CodOperador = pers.Valor
+          WHERE pr.IdProtocolo IN (${idsProtocolos.join(',')})
+          ORDER BY pr.FechaPractica DESC
+        `);
+      
+      console.log(`   → Prácticas de protocolos encontradas: ${practicasResult.recordset.length}`);
+      
+      // Agrupar prácticas por protocolo
+      const practicasPorProtocolo = {};
+      practicasResult.recordset.forEach(pr => {
+        if (!practicasPorProtocolo[pr.IdProtocolo]) {
+          practicasPorProtocolo[pr.IdProtocolo] = [];
+        }
+        practicasPorProtocolo[pr.IdProtocolo].push({
+          id: pr.IdPractica,
+          codigoPractica: pr.CodigoPractica || 0,
+          nombrePractica: pr.NombrePractica || 'Práctica no encontrada',
+          tipoPractica: pr.TipoPractica ? pr.TipoPractica.trim() : '',
+          tipoNomenclador: pr.TipoNomenclador ? pr.TipoNomenclador.trim() : '',
+          cantidad: pr.CantidadPractica || 0,
+          fecha: pr.FechaPractica ? clarionToDate(pr.FechaPractica) : null,
+          horaInicio: pr.HoraPracticaInicio ? clarionToTime(pr.HoraPracticaInicio) : '00:00:00',
+          horaFin: pr.HoraPracticaFin ? clarionToTime(pr.HoraPracticaFin) : '00:00:00',
+          observaciones: pr.Observaciones || '',
+          codOperador: pr.CodOperador || null,
+          nombreProfesional: pr.NombreProfesional || null,
+          matriculaProfesional: pr.MatriculaProfesional || null
+        });
+      });
+      
+      // Construir array de protocolos con sus prácticas
+      const protocolos = protocolosResult.recordset.map(p => ({
+        idProtocolo: p.IdProtocolo,
+        nroProtocolo: p.NroProtocolo ? String(p.NroProtocolo) : '',
+        numeroVisita: p.NumeroVisita,
+        idPaciente: p.IdPaciente,
+        fechaProtocolo: p.FechaProtocolo ? (p.FechaProtocolo instanceof Date ? p.FechaProtocolo.toISOString() : new Date(p.FechaProtocolo).toISOString()) : null,
+        tipoProtocolo: p.TipoProtocolo ? p.TipoProtocolo.trim() : '',
+        fechaHoraInicio: p.FechaHoraInicio ? (p.FechaHoraInicio instanceof Date ? p.FechaHoraInicio.toISOString() : new Date(p.FechaHoraInicio).toISOString()) : null,
+        fechaHoraFin: p.FechaHoraFin ? (p.FechaHoraFin instanceof Date ? p.FechaHoraFin.toISOString() : new Date(p.FechaHoraFin).toISOString()) : null,
+        diagnosticoPreProcedimiento: p.DiagnosticoPreProcedimiento ? p.DiagnosticoPreProcedimiento.trim() : '',
+        tecnica: p.Tecnica ? p.Tecnica.trim() : '',
+        diagnosticoPosProcedimiento: p.DiagnosticoPosProcedimiento ? p.DiagnosticoPosProcedimiento.trim() : '',
+        texto: p.Texto || '',
+        estado: p.Estado ? p.Estado.trim() : '',
+        idOperador: p.IdOperador || null,
+        nombreProfesionalProtocolo: p.NombreProfesionalProtocolo || null,
+        matriculaProfesionalProtocolo: p.MatriculaProfesionalProtocolo || null,
+        practicas: practicasPorProtocolo[p.IdProtocolo] || []
+      }));
+      
+      return protocolos;
+    } catch (error) {
+      console.error('Error al obtener protocolos:', error);
       return []; // Retornar array vacío si hay error
     }
   }

@@ -1,0 +1,94 @@
+╔════════════════════════════════════════════════════════════╗
+║  iMedicAD - RESUMEN DE USUARIOS CREADOS                  ║
+╚════════════════════════════════════════════════════════════╝
+
+📅 Fecha: 26 de Noviembre de 2025
+🖥️  Servidor: 201.235.17.254:1433
+💾 Base de datos: isource
+📋 Tabla: imUsuariosAuditores
+
+═══════════════════════════════════════════════════════════════
+
+✅ USUARIOS CREADOS Y CONFIGURADOS
+
+1. ADMINISTRADOR GENERAL
+   ├─ Usuario:  admin
+   ├─ Password: admin123
+   ├─ Nombre:   Administrador General
+   ├─ Email:    admin@imedic.com
+   └─ Hospital: Administración Central
+
+2. AUDITOR GENERAL
+   ├─ Usuario:  auditor
+   ├─ Password: Auditor2025!
+   ├─ Nombre:   Auditor General
+   ├─ Email:    auditor@imedic.com
+   └─ Hospital: Hospital Central
+
+3. USUARIO DEMO
+   ├─ Usuario:  demo
+   ├─ Password: Demo2025!
+   ├─ Nombre:   Usuario Demo
+   ├─ Email:    demo@imedic.com
+   └─ Hospital: Hospital Demo
+
+═══════════════════════════════════════════════════════════════
+
+🔧 SCRIPTS DISPONIBLES
+
+📁 backend/scripts/
+
+1. createUsersRemote.js ⭐ RECOMENDADO
+   → Crea usuarios directamente en SQL Server
+   → Uso: node createUsersRemote.js
+
+2. updateAdminPassword.js
+   → Actualiza la contraseña del admin
+   → Uso: node updateAdminPassword.js
+
+3. createTableRemote.js
+   → Crea la tabla imUsuariosAuditores
+   → Uso: node createTableRemote.js
+
+4. createDefaultUsers.js
+   → Genera SQL para crear usuarios
+   → Uso: node createDefaultUsers.js
+
+5. createUser.js
+   → Genera hash de una contraseña
+   → Uso: node createUser.js <password>
+
+═══════════════════════════════════════════════════════════════
+
+🌐 ACCESO A LA APLICACIÓN
+
+Desarrollo Local:
+→ http://localhost:3000/login
+
+Producción (Vercel):
+→ https://i-medick-ad-g5cg.vercel.app/login
+
+Backend (Render):
+→ https://imedickad-escuela.onrender.com
+
+═══════════════════════════════════════════════════════════════
+
+⚠️  NOTAS IMPORTANTES
+
+1. Las contraseñas están hasheadas con bcrypt (10 rounds)
+2. Todos los usuarios están activos por defecto
+3. El campo UltimoAcceso se actualiza en cada login
+4. Para producción, considera cambiar las contraseñas
+
+═══════════════════════════════════════════════════════════════
+
+📚 DOCUMENTACIÓN
+
+- CREDENCIALES_ACCESO.md → Credenciales de acceso
+- backend/scripts/README_USUARIOS.md → Guía completa
+- backend/scripts/insertDefaultUsers.sql → SQL listo para usar
+
+═══════════════════════════════════════════════════════════════
+
+✅ ESTADO: COMPLETADO
+Todos los usuarios han sido creados y están listos para usar.
