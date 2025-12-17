@@ -88,54 +88,67 @@ export default function PatientDetailPage({ params }: { params: { id: string } }
 
   return (
     <div className={styles.container}>
+      {/* Header */}
       <div className={styles.header}>
         <button onClick={() => router.back()} className={styles.backButton}>
           ← Volver
         </button>
+        <h1>{patient.apellidoNombre}</h1>
       </div>
 
-      <div className={styles.patientCard}>
-        <h1>{patient.apellidoNombre}</h1>
-        <div className={styles.patientGrid}>
+      {/* Información del Paciente */}
+      <div className={styles.patientInfo}>
+        <h2>INFORMACIÓN DEL PACIENTE</h2>
+        <div className={styles.infoGrid}>
           <div className={styles.infoItem}>
-            <span className={styles.label}>DNI:</span>
+            <span className={styles.label}>DNI</span>
             <span className={styles.value}>{patient.numeroDocumento}</span>
           </div>
           <div className={styles.infoItem}>
-            <span className={styles.label}>Fecha Nacimiento:</span>
+            <span className={styles.label}>Fecha Nacimiento</span>
             <span className={styles.value}>{formatDate(patient.fechaNacimiento)}</span>
           </div>
           <div className={styles.infoItem}>
-            <span className={styles.label}>Sexo:</span>
+            <span className={styles.label}>Sexo</span>
             <span className={styles.value}>
               {patient.sexo === 'M' ? 'Masculino' : 'Femenino'}
             </span>
           </div>
           {patient.telefono && (
             <div className={styles.infoItem}>
-              <span className={styles.label}>Teléfono:</span>
+              <span className={styles.label}>Teléfono</span>
               <span className={styles.value}>{patient.telefono}</span>
             </div>
           )}
           {patient.domicilio && (
             <div className={styles.infoItem}>
-              <span className={styles.label}>Domicilio:</span>
+              <span className={styles.label}>Domicilio</span>
               <span className={styles.value}>{patient.domicilio}</span>
             </div>
           )}
           {patient.email && (
             <div className={styles.infoItem}>
-              <span className={styles.label}>Email:</span>
+              <span className={styles.label}>Email</span>
               <span className={styles.value}>{patient.email}</span>
             </div>
           )}
         </div>
       </div>
 
-      <VisitsTable
-        numeroDocumento={patient.numeroDocumento}
-        patientName={patient.apellidoNombre}
-      />
+      {/* Historial de Visitas */}
+      <div className={styles.visitInfo}>
+        <h2>HISTORIAL DE VISITAS</h2>
+        <VisitsTable
+          numeroDocumento={patient.numeroDocumento}
+          patientName={patient.apellidoNombre}
+          patientData={{
+            fechaNacimiento: patient.fechaNacimiento,
+            sexo: patient.sexo,
+            telefono: patient.telefono,
+            domicilio: patient.domicilio
+          }}
+        />
+      </div>
     </div>
   );
 }

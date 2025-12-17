@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import visitDetailService from '@/services/visitDetailService';
 import { VisitDetail } from '@/types/visitDetail';
 import { rtfToText } from '@/utils/rtfToText';
+import PatientHeader from '@/components/PatientHeader';
 import styles from './styles.module.css';
 
 export default function VisitDetailPage() {
@@ -95,14 +96,29 @@ export default function VisitDetailPage() {
   }
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <button onClick={() => router.back()} className={styles.backButton}>
-          ← Volver
-        </button>
-        <h1>Detalle de Visita #{detalle.visita.numeroVisita}</h1>
-      </div>
+    <>
+      {/* Cabecera fija del paciente */}
+      <PatientHeader 
+        patientInfo={{
+          numeroDocumento: detalle.visita.paciente.numeroDocumento,
+          apellidoNombre: detalle.visita.paciente.apellidoNombre,
+          fechaNacimiento: detalle.visita.paciente.fechaNacimiento,
+          sexo: detalle.visita.paciente.sexo,
+          numeroVisita: detalle.visita.numeroVisita,
+          fechaAdmision: detalle.visita.fechaAdmision,
+          sector: detalle.visita.sector,
+          hospital: detalle.visita.hospital
+        }}
+      />
+      
+      <div className={styles.container}>
+        {/* Header */}
+        <div className={styles.header}>
+          <button onClick={() => router.back()} className={styles.backButton}>
+            ← Volver
+          </button>
+          <h1>Detalle de Visita #{detalle.visita.numeroVisita}</h1>
+        </div>
 
       {/* Información del Paciente */}
       <div className={styles.patientInfo}>
@@ -186,7 +202,7 @@ export default function VisitDetailPage() {
           className={activeTab === 'medicamentos' ? styles.tabActive : styles.tab}
           onClick={() => setActiveTab('medicamentos')}
         >
-          Medicamentos ({detalle.medicamentos.length})
+          Medicamentos Suministrados ({detalle.medicamentos.length})
         </button>
         <button
           className={activeTab === 'evoluciones' ? styles.tabActive : styles.tab}
@@ -512,7 +528,7 @@ export default function VisitDetailPage() {
         {/* Medicamentos */}
         {activeTab === 'medicamentos' && (
           <div className={styles.section}>
-            <h2>Control de Medicamentos</h2>
+            <h2>Medicamentos Suministrados</h2>
             {detalle.medicamentos.length === 0 && (
               <p className={styles.noData}>No hay medicamentos registrados</p>
             )}
@@ -1103,6 +1119,7 @@ export default function VisitDetailPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

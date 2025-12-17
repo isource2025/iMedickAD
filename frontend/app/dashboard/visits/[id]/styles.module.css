@@ -119,44 +119,54 @@
 /* Tabs */
 .tabs {
   display: flex;
-  gap: 4px;
-  margin-bottom: 40px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  gap: 8px;
+  margin-bottom: 0;
+  border-bottom: none;
   padding-bottom: 0;
 }
 
 .tab, .tabActive {
   padding: 16px 32px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
   cursor: pointer;
   font-size: 14px;
   font-weight: 400;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(0, 0, 0, 0.5);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   letter-spacing: 0.5px;
   text-transform: uppercase;
   position: relative;
+  margin-bottom: -1px;
 }
 
 .tab:hover {
   color: rgba(0, 0, 0, 0.7);
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
 }
 
 .tabActive {
   color: #1a1a1a;
   font-weight: 500;
-  border-bottom-color: #1a1a1a;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+  z-index: 1;
 }
 
 /* Tab Content */
 .tabContent {
-  background: transparent;
-  border-radius: 0;
-  padding: 40px 0;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 0 0px 16px 16px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   min-height: 400px;
 }
 
@@ -362,7 +372,8 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.04);
   border-radius: 20px;
-  padding: 36px 40px;
+  padding: 28px 36px;
+  margin-bottom: 20px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -374,15 +385,15 @@
 }
 
 .hciSectionTitle {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
   color: #1a1a1a;
-  margin: 0 0 32px 0;
-  padding-bottom: 0;
-  border-bottom: none;
-  letter-spacing: 0.5px;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.3px;
   text-transform: uppercase;
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .hciFields {

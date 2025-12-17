@@ -1,6 +1,5 @@
 'use client';
 
-import { Visit } from '@/types/visit';
 import { useRouter } from 'next/navigation';
 import { useVisits } from '@/hooks/useVisits';
 import styles from './styles.module.css';
@@ -8,9 +7,15 @@ import styles from './styles.module.css';
 interface VisitsTableProps {
   numeroDocumento: string;
   patientName: string;
+  patientData?: {
+    fechaNacimiento: string | null;
+    sexo: string;
+    telefono?: string;
+    domicilio?: string;
+  };
 }
 
-export default function VisitsTable({ numeroDocumento, patientName }: VisitsTableProps) {
+export default function VisitsTable({ numeroDocumento, patientName, patientData }: VisitsTableProps) {
   const router = useRouter();
   const {
     visits,
@@ -34,22 +39,11 @@ export default function VisitsTable({ numeroDocumento, patientName }: VisitsTabl
     return date.toLocaleDateString('es-AR');
   };
 
-  const getEstadoBadgeClass = (estado: string) => {
-    if (!estado) return styles.badgeDefault;
-    const estadoLower = estado.toLowerCase();
-    if (estadoLower.includes('egresado')) return styles.badgeEgresado;
-    if (estadoLower.includes('internado')) return styles.badgeInternado;
-    return styles.badgeDefault;
-  };
-
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h2>Historial de Visitas - {patientName}</h2>
-        <p className={styles.subtitle}>
-          Total de visitas: {totalCount}
-        </p>
-      </div>
+    <>
+      <p className={styles.subtitle}>
+        Total de visitas: {totalCount}
+      </p>
 
       {error && (
         <div className={styles.errorMessage}>
@@ -117,7 +111,7 @@ export default function VisitsTable({ numeroDocumento, patientName }: VisitsTabl
                       </div>
                     </td>
                     <td>
-                      <span className={`${styles.badge} ${getEstadoBadgeClass(visit.estado)}`}>
+                      <span className={styles.value}>
                         {visit.estado}
                       </span>
                     </td>
@@ -150,6 +144,6 @@ export default function VisitsTable({ numeroDocumento, patientName }: VisitsTabl
           )}
         </>
       )}
-    </div>
+    </>
   );
 }
