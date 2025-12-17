@@ -10,7 +10,7 @@
 2. Arquitectura Técnica
 3. Configuración del Proyecto
 4. Backend - Base de Datos
-5. Backend - API REST
+5. Backend - API REST 
 
 ### Parte 2: Frontend y Deployment
 6. Frontend - React/Next.js
